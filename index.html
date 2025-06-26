@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTop</title>
+    <link rel="icon" type="image/png" href="views/public/images/LogoLogo.png">
+    <link rel="stylesheet" href="views/public/css/styles.css">
+</head>
+<body>
+    <header>
+        <div id="header-placeholder"></div>
+    </header>
+
+    <main class="container">
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label for="sport-filter">Спорт:</label>
+                <select id="sport-filter">
+                    <option value="all">Сите</option>
+                    <option value="football">Фудбал</option>
+                    <option value="basketball">Кошарка</option>
+                    <option value="handball">Ракомет</option>
+                    <option value="esport">Еспорт</option>
+                </select>
+            </div>
+            <div class="filter-group search-group">
+                <label for="search-input">Пребарај Утакмица:</label>
+                <input type="text" id="search-input" placeholder="Пребарувај...">
+            </div>
+             <div class="sort-group">
+                <label for="time-sort">Сортирај по Време:</label>
+                <select id="time-sort">
+                    <option value="time-asc">Растечки</option>
+                    <option value="time-desc">Опаѓачки</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="match-list" id="match-list">
+            <div class="match-card" id="match_0001" data-sport="football" data-time="2025-06-21T19:00:00Z">
+                <div class="match-card-header">
+                    <div class="match-meta">
+                        <div class="meta-item">
+                            <span class="match-id-display">0001</span>
+                            <span>Today, 21:00</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>Фудбал</span>
+                        </div>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team-name">Wolfs</div>
+                        <div class="vs">vs</div>
+                        <div class="team-name">Everton</div>
+                    </div>
+                </div>
+                <div class="match-odds football-bets-container">
+                    <div class="main-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1</span>
+                            <button class="btn-odd"><span class="odd-value">2.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">X</span>
+                            <button class="btn-odd"><span class="odd-value">3.40</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2</span>
+                            <button class="btn-odd"><span class="odd-value">2.80</span></button>
+                        </div>
+                    </div>
+                    <div class="extra-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1-1</span>
+                            <button class="btn-odd"><span class="odd-value">3.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2-2</span>
+                            <button class="btn-odd"><span class="odd-value">3.80</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">3+</span>
+                            <button class="btn-odd"><span class="odd-value">1.80</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">4+</span>
+                            <button class="btn-odd"><span class="odd-value">2.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2+I</span>
+                            <button class="btn-odd"><span class="odd-value">2.20</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2+II</span>
+                            <button class="btn-odd"><span class="odd-value">2.10</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="match-card" id="match_0002" data-sport="basketball" data-time="2025-06-21T22:30:00Z">
+                <div class="match-card-header">
+                    <div class="match-meta">
+                        <div class="meta-item">
+                             <span class="match-id-display">0002</span>
+                            <span>Today, 22:30</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>Кошарка</span>
+                        </div>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team-name">Vardar</div>
+                        <div class="vs">vs</div>
+                        <div class="team-name">Pelister</div>
+                    </div>
+                </div>
+                <div class="match-odds football-bets-container">
+                    <div class="main-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1</span>
+                            <button class="btn-odd"><span class="odd-value">1.95</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">X</span>
+                            <button class="btn-odd"><span class="odd-value">16.00</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2</span>
+                            <button class="btn-odd"><span class="odd-value">1.85</span></button>
+                        </div>
+                    </div>
+                    <div class="extra-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">>60.5</span>
+                            <button class="btn-odd"><span class="odd-value">1.70</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type"><60.5</span>
+                            <button class="btn-odd"><span class="odd-value">2.00</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">1-1</span>
+                            <button class="btn-odd"><span class="odd-value">2.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2-2</span>
+                            <button class="btn-odd"><span class="odd-value">2.30</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">I > II</span>
+                            <button class="btn-odd"><span class="odd-value">1.90</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">II > I</span>
+                            <button class="btn-odd"><span class="odd-value">1.90</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="match-card" id="match_0008" data-sport="handball" data-time="2025-06-22T20:00:00Z">
+                <div class="match-card-header">
+                    <div class="match-meta">
+                        <div class="meta-item">
+                            <span class="match-id-display">0008</span>
+                            <span>Tomorrow, 22:00</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>Ракомет</span>
+                        </div>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team-name">Germany</div>
+                        <div class="vs">vs</div>
+                        <div class="team-name">France</div>
+                    </div>
+                </div>
+                <div class="match-odds football-bets-container"> 
+                    <div class="main-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1</span>
+                            <button class="btn-odd"><span class="odd-value">2.15</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">X</span>
+                            <button class="btn-odd"><span class="odd-value">6.00</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2</span>
+                            <button class="btn-odd"><span class="odd-value">1.90</span></button>
+                        </div>
+                    </div>
+                    <div class="extra-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1-1</span>
+                            <button class="btn-odd"><span class="odd-value">2.80</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2-2</span>
+                            <button class="btn-odd"><span class="odd-value">2.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">>60.5</span>
+                            <button class="btn-odd"><span class="odd-value">1.85</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type"><60.5</span>
+                            <button class="btn-odd"><span class="odd-value">1.95</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">I > II</span>
+                            <button class="btn-odd"><span class="odd-value">1.70</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">II > I</span>
+                            <button class="btn-odd"><span class="odd-value">2.10</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="match-card" id="match_0006" data-sport="esport" data-time="2025-06-23T11:00:00Z">
+                <div class="match-card-header">
+                    <div class="match-meta">
+                        <div class="meta-item">
+                            <span class="match-id-display">0006</span>
+                            <span>Tomorrow, 13:00</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>Еспорт</span>
+                        </div>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team-name">Fnatic</div>
+                        <div class="vs">vs</div>
+                        <div class="team-name">G2 Esports</div>
+                    </div>
+                </div>
+                <div class="match-odds football-bets-container">
+                    <div class="main-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">1</span>
+                            <button class="btn-odd"><span class="odd-value">1.80</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">X</span>
+                            <button class="btn-odd"><span class="odd-value">7.00</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2</span>
+                            <button class="btn-odd"><span class="odd-value">1.95</span></button>
+                        </div>
+                    </div>
+                    <div class="extra-odds">
+                        <div class="odd-item-container">
+                            <span class="odd-type">>2.5</span>
+                            <button class="btn-odd"><span class="odd-value">1.60</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type"><2.5</span>
+                            <button class="btn-odd"><span class="odd-value">2.20</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2:0</span>
+                            <button class="btn-odd"><span class="odd-value">2.80</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">0:2</span>
+                            <button class="btn-odd"><span class="odd-value">3.00</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">1:2</span>
+                            <button class="btn-odd"><span class="odd-value">2.50</span></button>
+                        </div>
+                        <div class="odd-item-container">
+                            <span class="odd-type">2:1</span>
+                            <button class="btn-odd"><span class="odd-value">2.40</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+<div id="betting-slip-container" class="hidden">
+    <div id="slip-details">
+        <div class="slip-header">
+            <h3>Утакмици</h3>
+            <button id="clear-slip-btn">Исчисти</button>
+        </div>
+        <div id="selected-bets-list">
+            </div>
+        <div class="slip-footer">
+            <div class="slip-footer-row">
+                <span>Коефициент:</span>
+                <span id="total-odds-value">1.00</span>
+            </div>
+            <div class="slip-footer-row">
+                <label for="stake-input">Уплата:</label>
+                <input type="number" id="stake-input" placeholder="0.00">
+            </div>
+            <div class="slip-footer-row">
+                <span>Добивка:</span>
+                <span id="potential-winnings-value">0.00</span>
+            </div>
+            <div class="slip-footer-row tax-section">
+                <span>Данок (15%):</span>
+                <span id="tax-amount-value">0.00</span>
+            </div>
+            <div class="slip-footer-row final-payout-section">
+                <span>За Исплата:</span>
+                <span id="final-payout-value">0.00</span>
+            </div>
+            <button class="btn-place-bet">Креирај Тикет</button>
+        </div>
+    </div>
+    <div id="slip-summary">
+        <div class="summary-info">
+            <span id="slip-selection-count">Утакмици</span>
+            <span>Коефициент:</span>
+            <span id="slip-total-odds">1.00</span>
+        </div>
+    </div>
+</div>
+
+    <script type="module" src="views/public/js/scripts.js"></script>
+
+</body>
+</html>

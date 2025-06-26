@@ -1,0 +1,66 @@
+<header>
+    <div class="container">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <img src="../views/public/images/LogoLogo.png" alt="TipTop" class="logo-image">
+            </a>
+            <nav class="main-nav">
+                <div class="main-nav-links">
+                    <a href="../views/promoci.html">Промоции</a>
+                    <a href="../views/contact.html">Контакт</a>
+                </div>
+                <div class="auth-dropdown">
+                    <button class="btn-account" id="account-button">Анонимен</button>
+                    <div class="dropdown-content" id="dropdown-content">
+                        <a href="#" id="login-btn">Најава</a>
+                        <a href="#" id="register-btn">Регисрација</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+            <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Најава</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Корисничко име</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Лозинка</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="form-submit-btn">Најави се</button>
+                <p class="form-switch">Немате акаунт? <a href="#" id="show-register">Регистрирај те се!</a></p>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Регистрација</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-email">Корисничко име</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Лозинка</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit" class="form-submit-btn">Регистрирај се</button>
+                <p class="form-switch">Имате акаунт? <a href="#" id="show-login">Најавете се!</a></p>
+            </form>
+        </div>
+    </div>
+
+</header>
+
+        
