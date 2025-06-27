@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const slipSummary = document.getElementById('slip-summary');
     const selectedBetsList = document.getElementById('selected-bets-list');
 
-
     // Summary Bar Elements
     const slipSelectionCount = document.getElementById('slip-selection-count');
     const slipTotalOdds = document.getElementById('slip-total-odds');

@@ -6,18 +6,16 @@
 body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(to bottom right, #064e3b, #052e16);
-    color: #f3f4f6; /* text-gray-100 */
+    color: #f3f4f6; 
     margin: 0;
     min-height: 100vh;
     padding-bottom: 1rem;
 }
 
 html, body {
-    /* Ensure no explicit overflow properties here that aren't 'visible' */
-    /* If you had overflow-y: hidden; or just overflow: hidden; it would break sticky positioning. */
-    overflow-x: hidden; /* Often good for preventing unwanted horizontal scroll */
-    overflow-y: auto;   /* Or 'scroll' if you always want scrollbars. 'auto' is common. */
-    height: 100%;       /* Recommended if using min-height: 100vh on body */
+    overflow-x: hidden; 
+    overflow-y: auto;   
+    height: 100%;       
     margin: 0;
     padding: 0;
 }
@@ -39,10 +37,9 @@ html, body {
     padding-right: 1rem;
 }
 
-/* Active navigation link style */
 .active-nav-link {
-    background-color: #047857; /* Or a different active color */
-    color: #ffffff !important; /* Important to override general link color */
+    background-color: #047857; 
+    color: #ffffff !important; 
     font-weight: 600;
 }
 
@@ -52,18 +49,17 @@ html, body {
 * =========================================
 */
 header {
-    background-color: #065f46; /* Darker Green */
+    background-color: #065f46; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     position: sticky;
     top: 0;
     z-index: 50;
 }
 
-/* This is a placeholder for the sticky header to prevent content from jumping */
 #header-placeholder {
     display: block;
-    position: static;   /* Important: Should not be 'relative' if header needs to stick to viewport */
-    overflow: visible;  /* Crucial: This must be 'visible' for sticky to work on children */
+    position: static;   
+    overflow: visible;  
     width: 100%;
 }
 
@@ -85,12 +81,10 @@ header {
     vertical-align: middle;
 }
 
-/* Default state for main navigation (hidden on mobile) */
 .main-nav {
     display: none;
 }
 
-/* --- Dropdown Styles for User Account --- */
 .auth-dropdown {
     position: relative;
     display: inline-block;
@@ -107,6 +101,8 @@ header {
     border: none;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    min-width: 100px; 
+    text-align: center;
 }
 
 .btn-account:hover {
@@ -114,7 +110,7 @@ header {
 }
 
 .dropdown-content {
-    display: none; /* Hidden by default, shown by JS */
+    display: none; 
     position: absolute;
     right: 0;
     background-color: #065f46;
@@ -138,9 +134,14 @@ header {
     color: white;
 }
 
-/* JS will add this class to show the dropdown */
 .show-dropdown {
     display: block;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #d1d5db;  
+    opacity: 1;      
 }
 
 /*
@@ -154,7 +155,7 @@ main {
 }
 
 .filters-bar {
-    background-color: #065f46; /* Darker Green */
+    background-color: #065f46; 
     padding: 1rem;
     margin-bottom: 2rem;
     border-radius: 0.5rem;
@@ -193,7 +194,7 @@ main {
 
 #search-input::placeholder {
     color: #cbd5e1;
-    opacity: 1; /* Firefox default is 0.5 opacity */
+    opacity: 1; 
 }
 
 /*
@@ -208,7 +209,7 @@ main {
 }
 
 .match-card {
-    background-color: #065f46; /* Darker Green */
+    background-color: #065f46; 
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -264,7 +265,7 @@ main {
 }
 
 .match-odds {
-    background-color: rgba(4, 120, 87, 0.5); /* Semi-transparent Medium Green */
+    background-color: rgba(4, 120, 87, 0.5); 
     padding: 1rem;
     display: grid;
 }
@@ -283,7 +284,7 @@ main {
 }
 
 .btn-odd {
-    background-color: #047857; /* Medium Green */
+    background-color: #047857; 
     border-radius: 0.5rem;
     border: none;
     color: #f3f4f6;
@@ -297,7 +298,7 @@ main {
 }
 
 .btn-odd:hover {
-    background-color: #069668; /* Lighter hover green */
+    background-color: #069668; 
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -308,17 +309,16 @@ main {
     font-weight: 700;
 }
 
-/* --- Football Specific Bet Layouts --- */
 .football-bets-container .main-odds {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 1X2 always 3 columns */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); 
     gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .football-bets-container .extra-odds {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Auto-fit to squeeze 6 on one line */
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); 
     gap: 0.5rem;
 }
 
@@ -346,7 +346,7 @@ main {
 * =========================================
 */
 .modal {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -359,7 +359,6 @@ main {
     align-items: center;
 }
 
-/* JS uses this class to show the modal with a flex display */
 .modal.modal-visible {
     display: flex;
 }
@@ -424,7 +423,7 @@ main {
     border: 1px solid #065f46;
     border-radius: 0.375rem;
     color: white;
-    box-sizing: border-box; /* Important for padding and width */
+    box-sizing: border-box; 
 }
 
 .form-group input:focus {
@@ -467,6 +466,89 @@ main {
     text-decoration: underline;
 }
 
+#register-matichen {
+    -moz-appearance: textfield; 
+    appearance: textfield;     
+}
+
+#register-matichen::-webkit-outer-spin-button,
+#register-matichen::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; 
+}
+
+
+/*
+* =========================================
+* POPUP FOR CONTACT
+* =========================================
+*/
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in-out;
+}
+
+#popup-overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+#popup-content {
+    background: linear-gradient(to bottom right, #065f46, #064e3b); 
+    margin: 10% auto; 
+    padding: 2rem; 
+    border: 1px solid #047857; 
+    width: 90%;
+    max-width: 400px;
+    border-radius: 0.5rem; 
+    position: relative;
+    transform: translateY(-20px); 
+    transition: transform 0.3s ease-in-out; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#popup-overlay.show #popup-content {
+    animation: fadeIn 0.3s ease-in-out forwards; 
+    transform: translateY(0); 
+}
+
+#popup-content h2 { 
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #f3f4f6;
+}
+
+#popup-message-text {
+    color: #f3f4f6; 
+    text-align: center;
+    margin: 0; 
+    padding: 0;
+}
+
+#popup-message-text.success {
+    color: #a7f3d0; 
+}
+
+#popup-message-text.error {
+    color: #fca5a5; 
+}
+
+
 /*
 * =========================================
 * BOTTOM-RIGHT COLLAPSIBLE BET SLIP
@@ -476,13 +558,19 @@ main {
     position: fixed;
     bottom: -1rem;
     left: 50%;
-    width: 90%; /* On small screens, take up most of the width */
-    max-width: 360px; /* On larger screens, cap width */
+    width: 90%; 
+    max-width: 360px; 
     z-index: 999;
     display: flex;
-    flex-direction: column-reverse; /* Puts summary at the bottom, details above */
-    transform: translateX(-50%) translateY(calc(100% - 60px)); /* Slide up by the height of the summary bar */
+    flex-direction: column-reverse; 
+    transform: translateX(-50%) translateY(calc(100% - 60px)); 
     transition: transform 0.4s ease-in-out;
+}
+
+.hidden {
+    display: none !important; /* Forces the element to be hidden, overriding other display properties */
+    visibility: hidden;      /* Also hides from screen readers and layout */
+    pointer-events: none;    /* Prevents any interaction */
 }
 
 #slip-summary {
@@ -521,14 +609,13 @@ main {
     border-bottom: none;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
-    max-height: 0; /* Collapsed by default */
+    max-height: 0; 
     overflow: hidden;
     transition: max-height 0.4s ease-in-out;
     display: flex;
     flex-direction: column;
 }
 
-/* --- Expanded State for Betting Slip --- */
 #betting-slip-container.expanded {
     transform: translateX(-50%) translateY(0);
 }
@@ -547,7 +634,6 @@ main {
     transform: rotate(180deg);
 }
 
-/* --- Betting Slip Inner Content --- */
 .slip-header {
     display: flex;
     justify-content: space-between;
@@ -633,7 +719,7 @@ main {
 }
 
 .remove-bet-btn:hover {
-    color: #ef4444; /* Red on hover */
+    color: #ef4444; 
 }
 
 .slip-footer {
@@ -681,7 +767,7 @@ main {
     color: #e2e8f0;
     font-size: 1rem;
     text-align: right;
-    -moz-appearance: textfield; /* Firefox */
+    -moz-appearance: textfield; 
     appearance: textfield;
 }
 
@@ -737,7 +823,7 @@ main {
 .promotion-image {
     width: 100%;
     height: 180px;
-    object-fit: fill; /* This will stretch/squash the image */
+    object-fit: fill; 
     border-bottom: 1px solid rgba(4, 120, 87, 0.5);
 }
 
@@ -863,7 +949,7 @@ main {
 .page-header h1 {
     color: #f3f4f6;
     margin-top: 0rem;
-    margin-bottom: 1rem; /* Додадена е мала маргина за подобар изглед */
+    margin-bottom: 1rem; 
     font-size: 2.5rem;
 }
 
@@ -879,8 +965,6 @@ main {
 * RESPONSIVE MEDIA QUERIES
 * =========================================
 */
-
-/* --- Small devices (640px and up) --- */
 @media (min-width: 640px) {
     .container {
         max-width: 640px;
@@ -903,7 +987,6 @@ main {
     }
 }
 
-/* --- Medium devices (768px and up) --- */
 @media (min-width: 768px) {
     .container {
         max-width: 768px;
@@ -945,7 +1028,6 @@ main {
     }
 }
 
-/* --- Large devices (1024px and up) --- */
 @media (min-width: 1024px) {
     .container {
         max-width: 1024px;
@@ -958,7 +1040,6 @@ main {
     }
 }
 
-/* --- Extra-large devices (1280px and up) --- */
 @media (min-width: 1280px) {
     .container {
         max-width: 1280px;

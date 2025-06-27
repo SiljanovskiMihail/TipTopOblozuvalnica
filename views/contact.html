@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="icon" type="image/png" href="public/images/LogoLogo.png">
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
+
 <body>
 
     <header>
@@ -14,10 +16,11 @@
     </header>
 
     <main class="container">
-    <div class="page-header">
-        <h1>Контактирајте Не</h1>
-        <p>Имате прашање, сугестија или ви е потребна помош? Слободно контактирајте не преку формата подолу или директно.</p>
-    </div>
+        <div class="page-header">
+            <h1>Контактирајте Не</h1>
+            <p>Имате прашање, сугестија или ви е потребна помош? Слободно контактирајте не преку формата подолу или
+                директно.</p>
+        </div>
 
         <div class="contact-section">
             <h2>Дојдете Во Контакт</h2>
@@ -26,24 +29,37 @@
                 <p><strong>Телефон:</strong> +389 77 777 777</p>
             </div>
 
-            <form class="contact-form">
+            <form id="form-message" class="contact-form">
                 <div class="form-group">
                     <label for="contact-name">Име и Презиме:</label>
-                    <input type="text" id="contact-name" name="name" placeholder="Вашето име и презиме..." required autocomplete="name">
+                    <input type="text" id="contact-name" name="name" placeholder="Вашето име и презиме..." required
+                        autocomplete="name">
                 </div>
                 <div class="form-group">
                     <label for="contact-email">Емаил Адреса:</label>
-                    <input type="email" id="contact-email" name="email" placeholder="Вашата емаил адреса..." required autocomplete="email">
+                    <input type="email" id="contact-email" name="email" placeholder="Вашата емаил адреса..." required
+                        autocomplete="email">
                 </div>
                 <div class="form-group">
                     <label for="contact-message">Порака:</label>
-                    <textarea id="contact-message" name="message" placeholder="Вашата порака..." required></textarea>
+                    <textarea id="contact-message" name="message" placeholder="Вашата порака..."
+                        rows="5" maxlength="200" required></textarea>
+                    <div id="char-count">0 / 200</div>
                 </div>
                 <button type="submit">Испрати Порака</button>
             </form>
         </div>
     </main>
 
+    <div id="popup-overlay">
+        <div id="popup-content">
+            <span class="close-btn">&times;</span> <p id="popup-message-text"></p>
+      </div>
+    </div>
+
     <script src="public/js/scripts.js"></script>
+    <script src="public/js/contact.js"></script>
+
 </body>
+
 </html>

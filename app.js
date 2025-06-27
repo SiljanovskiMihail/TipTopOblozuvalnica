@@ -1,24 +1,54 @@
-// Import the Express.js library
 const express = require('express');
-// Create an Express application instance
+const path = require('path');
+const pool = require('./database.js');
 const app = express();
-// Define the port the server will listen on
-const PORT = process.env.PORT || 3000; // Use port 3000 by default, or an environment variable
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3000; 
 
-// Serve static files from the current directory (your project root)
-// This makes all files in Oblozuvalnica/, including views/public/, directly accessible.
-// For example, views/public/css/styles.css will be accessible at /views/public/css/styles.css
 app.use(express.static(__dirname));
 
-// Define a route for the root URL ('/')
-// When a GET request comes to the root, send the index.html file
 app.get('/', (req, res) => {
-    // Send your main index.html file
-    // __dirname is the current directory of app.js
     res.sendFile(__dirname + '/index.html');
 });
 
-// Start the server and listen for incoming requests
+app.post('/api/poraki', async (req, res) => {
+    const { imePrezime, email, poraka } = req.body;
+
+    if (!imePrezime || !email || !poraka) {
+        return res.status(400).json({ success: false, message: 'All fields (imePrezime, email, poraka) are required.' });
+    }
+    if (imePrezime.length > 255 || email.length > 255 || poraka.length > 255) {
+         return res.status(400).json({ success: false, message: 'Input fields cannot exceed 255 characters.' });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format.' });
+    }
+
+    try {
+        const [rows, fields] = await pool.execute(
+            'CALL InsertPoraka(?, ?, ?)',
+            [imePrezime, email, poraka]
+        );
+
+        const insertedId = rows[0] && rows[0][0] ? rows[0][0].id : null;
+
+        res.status(201).json({
+            success: true,
+            message: 'Вашата порака е успешно испратена!',
+            id: insertedId 
+        });
+
+    } catch (error) {
+        console.error('Error calling stored procedure InsertPoraka:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Вашата порака не е испратена!'
+        });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log('Press CTRL-C to stop the server');
