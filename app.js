@@ -1,18 +1,119 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
-const pool = require('./database.js');
+const pool = require('./database.js'); 
+const bcrypt = require('bcrypt');
 const app = express();
+const session = require('express-session'); 
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const PORT = process.env.PORT || 3000; 
 
+const PORT = process.env.PORT || 3000;
 app.use(express.static(__dirname));
+
+// --- SESSION MIDDLEWARE SETUP (In-Memory) ---
+app.use(session({
+    secret: process.env.SESSION_SECRET, 
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', 
+        httpOnly: true, 
+        maxAge: 1000 * 60 * 60 * 24 
+    }
+}));
+
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.post('/api/poraki', async (req, res) => {
+
+// --- SESSION STATUS ROUTE ---
+app.get('/session-status', (req, res) => {
+    if (req.session.userId) {
+        res.json({
+            loggedIn: true,
+            username: req.session.username
+        });
+    } else {
+        res.json({
+            loggedIn: false
+        });
+    }
+});
+
+
+// --- LOGIN ROUTE ---
+app.post('/login', async (req, res) => {
+    const {
+        'login-username': username,
+        'login-password': password
+    } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            message: 'Корисничко име и лозинка се задолжителни.'
+        });
+    }
+
+    try {
+        const [users] = await pool.query('SELECT id, username, password FROM users WHERE username = ?', [username]);
+
+        if (users.length === 0) {
+            return res.status(401).json({
+                message: 'Невалидно корисничко име или лозинка.'
+            });
+        }
+
+        const user = users[0];
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({
+                message: 'Невалидно корисничко име или лозинка.'
+            });
+        }
+
+        req.session.userId = user.id;
+        req.session.username = user.username;
+
+        res.status(200).json({
+            message: 'Успешна најава!',
+            username: user.username
+        });
+
+    } catch (err) {
+        console.error('Грешка при најава:', err);
+        res.status(500).json({
+            message: 'Настана грешка при најавата.'
+        });
+    }
+});
+
+
+// --- LOGOUT ROUTE ---
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Грешка при одјава:', err);
+            return res.status(500).json({
+                message: 'Не можевте да се одјавите.'
+            });
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({
+        });
+    });
+});
+
+
+// --- Kontakt Route ---
+app.post('/poraki', async (req, res) => {
     const { imePrezime, email, poraka } = req.body;
 
     if (!imePrezime || !email || !poraka) {
@@ -48,6 +149,84 @@ app.post('/api/poraki', async (req, res) => {
         });
     }
 });
+
+// --- Registration Route ---
+app.post('/register', async (req, res) => {
+    const {
+        'register-user': username,
+        'register-matichen': user_private_id,
+        'register-password': password
+    } = req.body;
+
+    // 1. Basic Validation
+    if (!username || !user_private_id || !password) {
+        return res.status(400).json({ message: 'Сите полиња се задолжителни.' }); 
+    }
+
+    try {
+        // Check if username already exists 
+        const [users] = await pool.query(
+            'SELECT username, user_private_id FROM users WHERE username = ?',
+            [username]
+        );
+
+        let usernameExists = false;
+        let privateIdExists = false;
+
+        // Check for existing username
+        if (users.length > 0) {
+            if (users[0].username === username) {
+                usernameExists = true;
+            }
+        }
+
+        if (usernameExists) {
+            return res.status(409).json({ message: 'Корисничкото име е веќе зафатено.' });
+        }
+
+        // Check if user_private_id already exists
+        const [allPrivateIds] = await pool.query('SELECT user_private_id FROM users');
+
+        for (const user of allPrivateIds) {
+            const match = await bcrypt.compare(user_private_id, user.user_private_id);
+            if (match) {
+                privateIdExists = true;
+                break; 
+            }
+        }
+
+        if (privateIdExists) {
+            return res.status(409).json({ message: 'Матичниот број веќе постои.' });
+        }
+
+        if (users.length > 0) {
+            if (users[0].username === username) {
+                return res.status(409).json({ message: 'Корисничкото име е веќе зафатено.' }); 
+            }
+            if (users[0].user_private_id === user_private_id) {
+                return res.status(409).json({ message: 'Матичниот број веќе постои.' }); 
+            }
+        }
+
+        // Hash the password and matičen broj
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedMatichen = await bcrypt.hash(user_private_id, saltRounds);
+        
+        // Call the stored procedure with hashed data
+        await pool.query(
+            'CALL RegisterUser(?, ?, ?)',
+            [username, hashedPassword, hashedMatichen] // Send hashed data to the DB
+        );
+
+        res.status(201).json({ message: 'Успешна регистрација!' }); 
+
+    } catch (err) {
+        console.error('Грешка при регистрација:', err); 
+        res.status(500).json({ message: 'Настана грешка при регистрацијата.' }); 
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

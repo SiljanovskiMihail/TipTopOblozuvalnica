@@ -1,3 +1,5 @@
+<html>
+<body>
 <header>
     <div class="container">
         <div class="header-content">
@@ -26,12 +28,12 @@
             <h2>Најава</h2>
             <form id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Корисничко име</label>
-                    <input type="email" id="login-email" required placeholder="Внесете го вашето корисничко име...">
+                    <label for="login-username">Корисничко име</label>
+                    <input type="text" id="login-username" name="login-username" required placeholder="Внесете го вашето корисничко име...">
                 </div>
                 <div class="form-group">
                     <label for="login-password">Лозинка</label>
-                    <input type="password" id="login-password" required placeholder="Внесете ја вашата лозинка...">
+                    <input type="password" id="login-password" name="login-password" required placeholder="Внесете ја вашата лозинка...">
                 </div>
                 <button type="submit" class="form-submit-btn">Најави се</button>
                 <p class="form-switch">Немате акаунт? <a href="#" id="show-register">Регистрирај те се!</a></p>
@@ -48,23 +50,26 @@
             <h2>Регистрација</h2>
             <form id="register-form">
                 <div class="form-group">
-                    <label for="register-email">Корисничко име</label>
-                    <input type="email" id="register-email" required placeholder="Внесете корисничко име (Максимално 8 карактери)...">
+                    <label for="register-user">Корисничко име</label>
+                    <input type="text" id="register-user" name="register-user" required placeholder="Внесете корисничко име (Максимално 8 карактери)...">
                 </div>
                 <div class="form-group">
                     <label for="register-matichen">Матичен број</label>
-                    <input type="number" id="register-matichen" required placeholder="Внесете го вашиот матичен (13 цифри)...">
+                    <input type="number" id="register-matichen" name="register-matichen" required placeholder="Внесете го вашиот матичен (13 цифри)...">
                 </div>
                 <div class="form-group">
                     <label for="register-password">Лозинка</label>
-                    <input type="password" id="register-password" required placeholder="Внесете ја вашата лозинка...">
+                    <input type="password" id="register-password" name="register-password" required placeholder="Внесете ја вашата лозинка...">
                 </div>
                 <button type="submit" class="form-submit-btn">Регистрирај се</button>
+                <p id="message-area"></p>
                 <p class="form-switch">Имате акаунт? <a href="#" id="show-login">Најавете се!</a></p>
             </form>
         </div>
     </div>
-
 </header>
 
-        
+        <script src="public/js/register.js"></script>
+
+</body>
+</html>        

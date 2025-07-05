@@ -144,6 +144,11 @@ textarea::placeholder {
     opacity: 1;      
 }
 
+#message-area {
+    text-align: center; 
+    font-size: 1.5em;
+}
+
 /*
 * =========================================
 * MAIN CONTENT & FILTERS

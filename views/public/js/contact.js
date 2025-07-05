@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('/api/poraki', {
+                const response = await fetch('/poraki', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
