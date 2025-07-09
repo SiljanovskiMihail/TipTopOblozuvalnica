@@ -14,7 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 3000;
 app.use(express.static(__dirname));
 
-// --- SESSION MIDDLEWARE SETUP (In-Memory) ---
+
+
+/*
+* =========================================
+* SESSION MIDDLEWARE SETUP (In-Memory)
+* =========================================
+*/
 app.use(session({
     secret: process.env.SESSION_SECRET, 
     resave: false,
@@ -32,7 +38,12 @@ app.get('/', (req, res) => {
 });
 
 
-// --- SESSION STATUS ROUTE ---
+
+/*
+* =========================================
+* SESSION STATUS ROUTE
+* =========================================
+*/
 app.get('/session-status', (req, res) => {
     if (req.session.userId) {
         res.json({
@@ -47,7 +58,12 @@ app.get('/session-status', (req, res) => {
 });
 
 
-// --- LOGIN ROUTE ---
+
+/*
+* =========================================
+* LOGIN ROUTE
+* =========================================
+*/
 app.post('/login', async (req, res) => {
     const {
         'login-username': username,
@@ -96,7 +112,12 @@ app.post('/login', async (req, res) => {
 });
 
 
-// --- LOGOUT ROUTE ---
+
+/*
+* =========================================
+* LOGOUT ROUTE
+* =========================================
+*/
 app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -112,7 +133,13 @@ app.post('/logout', (req, res) => {
 });
 
 
-// --- Kontakt Route ---
+
+
+/*
+* =========================================
+* KONTAKT ROUTE
+* =========================================
+*/
 app.post('/poraki', async (req, res) => {
     const { imePrezime, email, poraka } = req.body;
 
@@ -150,7 +177,13 @@ app.post('/poraki', async (req, res) => {
     }
 });
 
-// --- Registration Route ---
+
+
+/*
+* =========================================
+* REGISTRATION ROUTE
+* =========================================
+*/
 app.post('/register', async (req, res) => {
     const {
         'register-user': username,
@@ -158,10 +191,35 @@ app.post('/register', async (req, res) => {
         'register-password': password
     } = req.body;
 
-    // 1. Basic Validation
-    if (!username || !user_private_id || !password) {
-        return res.status(400).json({ message: 'Сите полиња се задолжителни.' }); 
+    // 2. Username Validation: Max 8 characters
+    if (username && username.length > 8) {
+        return res.status(409).json({ message: 'Максимално 8 карактери за корисничко име.' });
     }
+
+    // 5. Matichen (user_private_id) Validation
+    if (user_private_id) {
+        // Must be exactly 13 digits
+        if (!/^\d{13}$/.test(user_private_id)) {
+            return res.status(409).json({ message: 'Матичниот број мора да содржи 13 цифри.' });
+        } else {
+            const day = parseInt(user_private_id.substring(0, 2), 10);
+            const month = parseInt(user_private_id.substring(2, 4), 10);
+            const lastThreeDigits = parseInt(user_private_id.substring(10, 13), 10);
+
+            // First two digits (day): 01-31
+            if (day < 1 || day > 31) {
+                return res.status(409).json({ message: 'Матичниот број не е валиден!' });
+            }
+            // Third and fourth digits (month): 01-12
+            if (month < 1 || month > 12) {
+                return res.status(409).json({ message: 'Матичниот број не е валиден!' });
+            }
+            // Last three digits: NOT 008-025
+            if (lastThreeDigits >= 8 && lastThreeDigits <= 25) {
+                return res.status(409).json({ message: 'Матичниот број не е валиден!' });
+            }
+        }
+    } 
 
     try {
         // Check if username already exists 

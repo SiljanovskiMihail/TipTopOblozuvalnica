@@ -56,7 +56,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `user_private_id` (`user_private_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'mihail','$2b$10$Smf96HyBK8EH8BJNssuiMu6ZS/IYy7Kb68NdzI.uvk8J/MYdy0kgS','$2b$10$nnEALPsaulESCyKay07yE.ZmRcWohlP415uK4gUvLQT45NYgmKrca'),(2,'mihail1','$2b$10$HsAJseO6ZDJ7Vkd6c2/PPO7W0gsAnC4gpljoQCEbmT4C62SKYd8Zm','$2b$10$qWyuioZjxA6o0rcZgLbL6eHKlj.cwh1n9Y0VKuQ5Coqpipm2wqEOG'),(3,'mihail2','$2b$10$Xj7Dk2fO1S82VjtZZjw.1.L4S1/y37VvuTlGtrZPiCZ1wI9xj6hei','$2b$10$fy.jNhAxCbLHoRgzEHkfqu9ozpQBIE.aabLXJhzcspAij9yQvzsiK'),(4,'mihail3','$2b$10$ehb0B.JNWU6Y0fb7M1IWd.9qo1Gi42i.tbgkY6IP75ksKSGamyZHG','$2b$10$9IZXx92Ef5ZYYILZESLomOpkax321ws60laCAzjhm8UfNpo6AOIe2'),(5,'mihail4','$2b$10$q4hcqN.QPsCbVXRxnIabIufHWKZ73.2HUr7sQh0lKVVGMs8D4OBl6','$2b$10$m2lPe.cZuPJJhpiRcJVQBe/UHT7D4WXVFPpzfYwX4iAVGS1I1kV4O'),(6,'mihail5','$2b$10$FNLRS4dZoWaaOtLY8Qg9F.nxmrjILHWTReOep3hS4.YRxj6K/VcZi','$2b$10$AKfku3RxvXFHSe5YN47IxebqD3cqsBCLxh4YrtHr8d.09FJfPxZM.');
+INSERT INTO `users` VALUES (1,'mihail','$2b$10$Smf96HyBK8EH8BJNssuiMu6ZS/IYy7Kb68NdzI.uvk8J/MYdy0kgS','$2b$10$nnEALPsaulESCyKay07yE.ZmRcWohlP415uK4gUvLQT45NYgmKrca'),(2,'mihail1','$2b$10$HsAJseO6ZDJ7Vkd6c2/PPO7W0gsAnC4gpljoQCEbmT4C62SKYd8Zm','$2b$10$qWyuioZjxA6o0rcZgLbL6eHKlj.cwh1n9Y0VKuQ5Coqpipm2wqEOG'),(3,'mihail2','$2b$10$Xj7Dk2fO1S82VjtZZjw.1.L4S1/y37VvuTlGtrZPiCZ1wI9xj6hei','$2b$10$fy.jNhAxCbLHoRgzEHkfqu9ozpQBIE.aabLXJhzcspAij9yQvzsiK'),(4,'mihail3','$2b$10$ehb0B.JNWU6Y0fb7M1IWd.9qo1Gi42i.tbgkY6IP75ksKSGamyZHG','$2b$10$9IZXx92Ef5ZYYILZESLomOpkax321ws60laCAzjhm8UfNpo6AOIe2'),(5,'mihail4','$2b$10$q4hcqN.QPsCbVXRxnIabIufHWKZ73.2HUr7sQh0lKVVGMs8D4OBl6','$2b$10$m2lPe.cZuPJJhpiRcJVQBe/UHT7D4WXVFPpzfYwX4iAVGS1I1kV4O'),(6,'mihail5','$2b$10$FNLRS4dZoWaaOtLY8Qg9F.nxmrjILHWTReOep3hS4.YRxj6K/VcZi','$2b$10$AKfku3RxvXFHSe5YN47IxebqD3cqsBCLxh4YrtHr8d.09FJfPxZM.'),(7,'asfsafsafsafasfas','$2b$10$C5xuNGzvihFD5NZKackhSeOSpLoNZFbj4SuqgLycROE3dplTc/TBq','$2b$10$lQJi9t57fzNXFWGuCu.NDu1L.SNtEbXWQVQ1nF0UMzUQ8JiRVlrZW'),(8,'mihailllll','$2b$10$GXm31eha6mqYNADi3F17E.OFmUpaCBUT.TiE2eLKo.mIM2TjtRf32','$2b$10$Qk01R857zE0o5L8bWeWFWeux/h1U0WR98xfayYV979/ELFINqZD8m'),(9,'mihail12','$2b$10$AdwxsOY3Bh7Dl3AEb4fIvuKS4nWS/jBE5iGCrvtewwA0/eSNrVH6m','$2b$10$dM8zPxRO.bJ0oDpUGw263.9QlDdlGMLBL0hPs0MygOTu4GNu8r7Ey'),(10,'mihail14','$2b$10$ObW6t8ky9fnjXmNoAvMWcOcjQU.x644FdSKHvkkivD.tIJze3fIi6','$2b$10$aEfAxOKuzuFox30krhWMreUeurIVvoQwhocBQ0RLEKH8Yv8LR9442');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,4 +133,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-05 23:24:32
+-- Dump completed on 2025-07-09 17:53:37
