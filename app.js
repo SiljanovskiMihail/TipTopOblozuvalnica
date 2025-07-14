@@ -38,6 +38,67 @@ app.get('/', (req, res) => {
 });
 
 
+// Create an API endpoint to get all matches
+// --- API endpoint to get matches (UPDATED) ---
+app.get('/api/matches', async (req, res) => {
+    try {
+        const sql = `
+            SELECT 
+                m.*, 
+                o.odd_type, 
+                o.odd_value, 
+                o.is_main_odd
+            FROM 
+                matches m
+            LEFT JOIN 
+                odds o ON m.match_id_str = o.match_id_str
+            ORDER BY 
+                m.match_time, 
+                m.id, 
+                o.is_main_odd DESC, 
+                CASE o.odd_type 
+                    WHEN '1' THEN 1
+                    WHEN 'X' THEN 2
+                    WHEN '2' THEN 3
+                    ELSE 4 
+                END, 
+                o.odd_type;
+        `;
+        const [rows] = await pool.query(sql);
+
+        const matchesMap = new Map();
+
+        rows.forEach(row => {
+            const matchId = row.match_id_str;
+            if (!matchesMap.has(matchId)) {
+                matchesMap.set(matchId, {
+                    match_id_str: row.match_id_str,
+                    match_time: row.match_time,
+                    sport_display_name: row.sport_display_name,
+                    team1: row.team1,
+                    team2: row.team2,
+                    odds: []
+                });
+            }
+            if (row.odd_type) {
+                matchesMap.get(matchId).odds.push({
+                    odd_type: row.odd_type,
+                    odd_value: row.odd_value,
+                    is_main_odd: !!row.is_main_odd 
+                });
+            }
+        });
+
+        const results = Array.from(matchesMap.values());
+        res.json(results);
+    } catch (err) {
+        console.error('Database query error:', err);
+        res.status(500).json({ error: 'Failed to fetch matches and odds from the database.' });
+    }
+});
+
+
+
 
 /*
 * =========================================

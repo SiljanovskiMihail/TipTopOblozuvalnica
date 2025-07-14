@@ -16,6 +16,64 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `matches`
+--
+
+DROP TABLE IF EXISTS `matches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `matches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `match_id_str` varchar(20) NOT NULL,
+  `sport_display_name` varchar(50) NOT NULL,
+  `team1` varchar(100) NOT NULL,
+  `team2` varchar(100) NOT NULL,
+  `match_time` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `match_id_str` (`match_id_str`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `matches`
+--
+
+LOCK TABLES `matches` WRITE;
+/*!40000 ALTER TABLE `matches` DISABLE KEYS */;
+INSERT INTO `matches` VALUES (1,'match_0001','Фудбал','Wolfs','Everton','2025-06-21 21:00:00'),(2,'match_0002','Кошарка','Vardar','Pelister','2025-06-21 22:30:00'),(3,'match_0008','Ракомет','Germany','France','2025-06-22 22:00:00'),(4,'match_0006','Еспорт','Fnatic','G2 Esports','2025-06-23 13:00:00');
+/*!40000 ALTER TABLE `matches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `odds`
+--
+
+DROP TABLE IF EXISTS `odds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `odds` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `match_id_str` varchar(20) NOT NULL,
+  `odd_type` varchar(20) NOT NULL,
+  `odd_value` decimal(8,2) NOT NULL,
+  `is_main_odd` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `match_id_str` (`match_id_str`),
+  CONSTRAINT `odds_ibfk_1` FOREIGN KEY (`match_id_str`) REFERENCES `matches` (`match_id_str`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `odds`
+--
+
+LOCK TABLES `odds` WRITE;
+/*!40000 ALTER TABLE `odds` DISABLE KEYS */;
+INSERT INTO `odds` VALUES (1,'match_0001','1',2.50,1),(2,'match_0001','X',3.40,1),(3,'match_0001','2',2.80,1),(4,'match_0001','1-1',3.50,0),(5,'match_0001','2-2',3.80,0),(6,'match_0001','3+',1.80,0),(7,'match_0001','4+',2.50,0),(8,'match_0001','2+I',2.20,0),(9,'match_0001','2+II',2.10,0),(10,'match_0002','1',4.65,1),(11,'match_0002','X',16.00,1),(12,'match_0002','2',1.10,1),(13,'match_0002','>60.5',1.70,0),(14,'match_0002','<60.5',2.00,0),(15,'match_0002','1-1',8.40,0),(16,'match_0002','2-2',1.45,0),(17,'match_0002','I > II',1.90,0),(18,'match_0002','II > I',1.90,0),(19,'match_0008','1',2.15,1),(20,'match_0008','X',6.00,1),(21,'match_0008','2',1.90,1),(22,'match_0008','1-1',2.80,0),(23,'match_0008','2-2',2.50,0),(24,'match_0008','>60.5',1.85,0),(25,'match_0008','<60.5',1.95,0),(26,'match_0008','I > II',1.70,0),(27,'match_0008','II > I',2.10,0),(28,'match_0006','1',1.80,1),(29,'match_0006','X',7.00,1),(30,'match_0006','2',1.95,1),(31,'match_0006','>2.5',1.60,0),(32,'match_0006','<2.5',2.20,0),(33,'match_0006','2:0',2.80,0),(34,'match_0006','0:2',3.00,0),(35,'match_0006','1:2',2.50,0),(36,'match_0006','2:1',2.40,0);
+/*!40000 ALTER TABLE `odds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `poraki`
 --
 
@@ -133,4 +191,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-09 17:53:37
+-- Dump completed on 2025-07-14 20:33:29

@@ -23,7 +23,7 @@
         const totalOdds = selectedBets.reduce((total, bet) => total * parseFloat(bet.oddValue), 1);
         const stake = parseFloat(stakeInput ? stakeInput.value : '0') || 0;
         const potentialWinnings = totalOdds * stake;
-        const taxAmount = potentialWinnings * TAX_RATE;
+        const taxAmount = (potentialWinnings - stake) * TAX_RATE;
         const finalPayout = potentialWinnings - taxAmount;
 
         let selectionText = `${selectedBets.length} Утакмици`;
