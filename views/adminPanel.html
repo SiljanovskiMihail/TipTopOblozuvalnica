@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTop - AdminPanel</title>
+    <link rel="icon" type="image/png" href="views/public/images/LogoLogo.png">
+    <link rel="stylesheet" href="views/public/css/styles.css">
+    <style>
+        /* Additional styles for the new layout */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px; /* Prevents fields from becoming too small */
+            margin-bottom: 0;
+        }
+        .odds-section h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+        .main-odds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        .main-odd-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .main-odd-group label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+        .extra-odds-container .odd-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .extra-odds-container .odd-type-input {
+            flex: 2;
+        }
+        .extra-odds-container .odd-value-input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="header-placeholder"></div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Админ Панел</h1>
+            <p>Управување со утакмици и коефициенти.</p>
+        </div>
+
+        <!-- ADD MATCH SECTION -->
+        <section class="admin-section" id="add-match-section">
+            <h2>Додај Нова Утакмица</h2>
+            <form id="add-match-form" class="admin-form">
+                <!-- Row 1: ID, Sport, Time -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new-match-id">ID на Утакмица (само број):</label>
+                        <input type="number" id="new-match-id" required placeholder="пр: 1001">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-sport-name">Име на Спорт:</label>
+                        <select id="new-sport-name" required>
+                            <option value="Фудбал">Фудбал</option>
+                            <option value="Кошарка">Кошарка</option>
+                            <option value="Ракомет">Ракомет</option>
+                            <option value="Еспорт">Еспорт</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-match-time">Време на Утакмица:</label>
+                        <input type="datetime-local" id="new-match-time" required>
+                    </div>
+                </div>
+
+                <!-- Row 2: Teams -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new-team1">Тим 1:</label>
+                        <input type="text" id="new-team1" required placeholder="Внесете име на Тим 1...">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-team2">Тим 2:</label>
+                        <input type="text" id="new-team2" required placeholder="Внесете име на Тим 2...">
+                    </div>
+                </div>
+
+                <!-- Odds Section -->
+                <div class="odds-section">
+                    <h3>Главни Коефициенти</h3>
+                    <div class="main-odds-grid">
+                        <div class="main-odd-group">
+                            <label for="new-main-odd-1">Тип "1"</label>
+                            <input type="number" step="0.01" id="new-main-odd-1" class="main-odd-value-input" data-odd-type="1" placeholder="Вредност" required>
+                        </div>
+                        <div class="main-odd-group">
+                            <label for="new-main-odd-X">Тип "X"</label>
+                            <input type="number" step="0.01" id="new-main-odd-X" class="main-odd-value-input" data-odd-type="X" placeholder="Вредност" required>
+                        </div>
+                        <div class="main-odd-group">
+                            <label for="new-main-odd-2">Тип "2"</label>
+                            <input type="number" step="0.01" id="new-main-odd-2" class="main-odd-value-input" data-odd-type="2" placeholder="Вредност" required>
+                        </div>
+                    </div>
+
+                    <h3>Дополнителни Коефициенти (макс. 6)</h3>
+                    <div id="new-extra-odds-container" class="extra-odds-container">
+                        <!-- Extra odds will be dynamically added here -->
+                    </div>
+                    <button type="button" id="add-extra-odd-btn" class="btn-secondary">Додај Дополнителен Коефициент</button>
+                </div>
+                
+                <button type="submit" class="form-submit-btn" style="margin-top: 1.5rem;">Додај Утакмица</button>
+                <div id="add-match-message" class="form-message"></div>
+            </form>
+        </section>
+
+        <!-- MANAGE MATCHES SECTION -->
+        <section class="admin-section" id="manage-matches-section">
+            <h2>Управување со Постоечки Утакмици</h2>
+            <div id="admin-match-list" class="match-list"></div>
+            <div id="admin-matches-message" class="form-message"></div>
+        </section>
+    </main>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-match-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Измени Утакмица</h2>
+            <form id="edit-match-form" class="admin-form">
+                <input type="hidden" id="edit-match-id-hidden">
+                <div class="form-group">
+                    <label>ID на Утакмица:</label>
+                    <input type="text" id="edit-match-id-display" disabled>
+                </div>
+                 <!-- Form layout similar to the add form -->
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-sport-name">Име на Спорт:</label>
+                        <select id="edit-sport-name" required>
+                            <option value="Фудбал">Фудбал</option>
+                            <option value="Кошарка">Кошарка</option>
+                            <option value="Ракомет">Ракомет</option>
+                            <option value="Еспорт">Еспорт</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-match-time">Време на Утакмица:</label>
+                        <input type="datetime-local" id="edit-match-time" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-team1">Тим 1:</label>
+                        <input type="text" id="edit-team1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-team2">Тим 2:</label>
+                        <input type="text" id="edit-team2" required>
+                    </div>
+                </div>
+                <!-- Edit Odds Section -->
+                <div class="odds-section">
+                    <h3>Коефициенти</h3>
+                    <div id="edit-odds-container">
+                        <!-- All odds (main and extra) will be dynamically added here for simplicity in the modal -->
+                    </div>
+                    <button type="button" id="add-edit-odd-field-btn" class="btn-secondary">Додај Коефициент</button>
+                </div>
+
+                <button type="submit" class="form-submit-btn" style="margin-top: 1.5rem;">Зачувај Промени</button>
+                <div id="edit-match-message" class="form-message"></div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="views/public/js/admin.js"></script>
+    <script type="module" src="views/public/js/scripts.js"></script>
+</body>
+</html>

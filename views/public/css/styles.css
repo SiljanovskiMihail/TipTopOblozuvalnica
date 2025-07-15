@@ -1055,3 +1055,304 @@ main {
         max-width: 1280px;
     }
 }
+
+
+
+
+
+
+
+
+/* views/public/css/admin.css */
+
+.admin-section {
+    background-color: #065f46;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: #f3f4f6;
+}
+
+.admin-section h2 {
+    color: #4ade80;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.admin-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.admin-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #d1d5db;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #047857;
+    border-radius: 0.375rem;
+    background-color: #047857;
+    color: #f3f4f6;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.admin-form input[type="text"]:focus,
+.admin-form input[type="number"]:focus,
+.admin-form input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px #22c55e;
+}
+
+.admin-form input:disabled {
+    background-color: #03543f;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.admin-form small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+.admin-form h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #d1d5db;
+    font-size: 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+}
+
+.odd-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    background-color: rgba(4, 120, 87, 0.3);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+}
+
+.odd-input-group input {
+    flex: 1;
+    min-width: 80px; /* Adjust as needed */
+}
+
+.odd-input-group .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #d1d5db;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.odd-input-group .checkbox-container input[type="checkbox"] {
+    width: auto; /* Override full width */
+    padding: 0;
+    height: 1.2em;
+    width: 1.2em;
+    border-radius: 0.2em;
+    background-color: #047857;
+    border: 1px solid #22c55e;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+.odd-input-group .checkbox-container input[type="checkbox"]:checked {
+    background-color: #22c55e;
+    border-color: #16a34a;
+}
+
+.odd-input-group .checkbox-container input[type="checkbox"]:checked::after {
+    content: '✔';
+    color: #052e16;
+    font-size: 0.8em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.remove-odd-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-odd-btn:hover {
+    background-color: #dc2626;
+}
+
+.btn-secondary {
+    background-color: #047857;
+    color: #f3f4f6;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin-top: 1rem;
+    display: inline-block; /* For adding odd fields */
+}
+
+.btn-secondary:hover {
+    background-color: #069668;
+}
+
+.admin-form .form-submit-btn {
+    margin-top: 2rem;
+}
+
+.form-message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.form-message.success {
+    background-color: #a7f3d0;
+    color: #064e3b;
+}
+
+.form-message.error {
+    background-color: #fca5a5;
+    color: #880000;
+}
+
+/* Match card specific for admin panel */
+.admin-match-list .match-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-match-list .match-card:last-child {
+    border-bottom: none;
+}
+
+.admin-match-list .match-card-header {
+    padding: 0; /* Override default padding */
+    margin-bottom: 1rem;
+}
+
+.admin-match-list .match-odds {
+    background-color: transparent; /* Remove background */
+    padding: 0;
+    display: block; /* Stack main and extra odds vertically */
+}
+
+.admin-match-list .match-odds .main-odds,
+.admin-match-list .match-odds .extra-odds {
+    display: flex; /* Keep odds horizontal */
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-match-list .match-card .match-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+.admin-match-list .match-actions .btn-edit,
+.admin-match-list .match-actions .btn-delete {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.admin-match-list .match-actions .btn-edit {
+    background-color: #f59e0b;
+    color: #1f2937;
+}
+
+.admin-match-list .match-actions .btn-edit:hover {
+    background-color: #d97706;
+}
+
+.admin-match-list .match-actions .btn-delete {
+    background-color: #ef4444;
+    color: #f3f4f6;
+}
+
+.admin-match-list .match-actions .btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* Modal specific for Admin Panel (adjustments) */
+#edit-match-modal .modal-content {
+    max-width: 600px; /* Wider for more form fields */
+}
+
+
+/* Responsive adjustments */
+@media (min-width: 640px) {
+    .odd-input-group {
+        flex-wrap: nowrap; /* Keep odd inputs on one line */
+    }
+}
+
+.form-row {
+    display: flex; /* Enable Flexbox */
+    gap: 1.5rem; /* Space between the two form groups */
+    margin-bottom: 1rem; /* Space below the row */
+    align-items: flex-end; /* Align inputs/selects at the bottom */
+}
+
+.form-row .form-group {
+    flex: 1; /* Allow each form group to take equal space */
+    margin-bottom: 0; /* Remove default bottom margin as gap handles spacing */
+}
+
+/* Optional: Make inputs/selects in this row fill available space */
+.form-row .form-group input,
+.form-row .form-group select {
+    width: 100%; /* Ensure they fill their parent .form-group */
+}
+
+/* Responsive adjustment for smaller screens if needed */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column; /* Stack vertically on small screens */
+        gap: 0; /* Remove gap when stacked */
+    }
+    .form-row .form-group {
+        margin-bottom: 1rem; /* Add back bottom margin when stacked */
+    }
+}

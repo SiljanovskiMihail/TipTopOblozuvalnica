@@ -33,13 +33,179 @@ app.use(session({
 }));
 
 
+
+/*
+* =========================================
+* INDEX ROUTE
+* =========================================
+*/
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
 
-// Create an API endpoint to get all matches
-// --- API endpoint to get matches (UPDATED) ---
+
+/*
+* =========================================
+* ADMIN ROUTE
+* =========================================
+*/
+app.get('/admin', (req, res) => {
+    res.sendFile(__dirname + '/views/adminPanel.html');
+});
+
+
+
+
+// New: GET single match by ID (for edit modal)
+app.get('/api/matches/:match_id_str', async (req, res) => {
+    const { match_id_str } = req.params;
+    try {
+        const sql = `
+            SELECT
+                m.*,
+                o.id AS odd_db_id,
+                o.odd_type,
+                o.odd_value,
+                o.is_main_odd
+            FROM
+                matches m
+            LEFT JOIN
+                odds o ON m.match_id_str = o.match_id_str
+            WHERE
+                m.match_id_str = ?
+            ORDER BY
+                o.is_main_odd DESC,
+                CASE o.odd_type
+                    WHEN '1' THEN 1
+                    WHEN 'X' THEN 2
+                    WHEN '2' THEN 3
+                    ELSE 4
+                END,
+                o.odd_type;
+        `;
+        const [rows] = await pool.query(sql, [match_id_str]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Match not found.' });
+        }
+
+        const match = {
+            match_id_str: rows[0].match_id_str,
+            match_time: rows[0].match_time,
+            sport_display_name: rows[0].sport_display_name,
+            team1: rows[0].team1,
+            team2: rows[0].team2,
+            odds: []
+        };
+
+        rows.forEach(row => {
+            if (row.odd_type) {
+                match.odds.push({
+                    odd_db_id: row.odd_db_id,
+                    odd_type: row.odd_type,
+                    odd_value: parseFloat(row.odd_value),
+                    is_main_odd: !!row.is_main_odd
+                });
+            }
+        });
+
+        res.json(match);
+    } catch (err) {
+        console.error('Database query error (GET single match):', err);
+        res.status(500).json({ error: 'Failed to fetch match details.' });
+    }
+});
+
+
+// New: POST (Add) a new match and its odds
+// POST (Add) a new match and its odds
+app.post('/api/matches', async (req, res) => {
+    // Note: The frontend now sends match_id_num, which is just the number.
+    const { match_id_num, sport_display_name, team1, team2, match_time, odds } = req.body;
+
+    if (!match_id_num || !sport_display_name || !team1 || !team2 || !match_time) {
+        return res.status(400).json({ error: 'Missing required match fields.' });
+    }
+
+    try {
+        // Convert the odds array to a JSON string to pass to the stored procedure
+        const oddsJson = JSON.stringify(odds || []);
+
+        await pool.query(
+            'CALL sp_AddMatch(?, ?, ?, ?, ?, ?)',
+            [match_id_num, sport_display_name, team1, team2, match_time, oddsJson]
+        );
+
+        res.status(201).json({ message: 'Match and odds added successfully.', matchId: `match_${match_id_num}` });
+
+    } catch (err) {
+        console.error('Database transaction error (add match):', err);
+        // Check for duplicate entry error from the database
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ error: `Match ID 'match_${match_id_num}' already exists.` });
+        }
+        res.status(500).json({ error: 'Failed to add match and odds to the database.' });
+    }
+});
+
+// New: PUT (Update) an existing match and its odds
+// PUT (Update) an existing match and its odds
+app.put('/api/matches/:match_id_str', async (req, res) => {
+    const { match_id_str } = req.params;
+    const { sport_display_name, team1, team2, match_time, odds } = req.body;
+
+    if (!sport_display_name || !team1 || !team2 || !match_time) {
+        return res.status(400).json({ error: 'Missing required match fields for update.' });
+    }
+
+    try {
+        const oddsJson = JSON.stringify(odds || []);
+
+        // The stored procedure handles the transaction (update match, delete old odds, insert new odds)
+        await pool.query(
+            'CALL sp_UpdateMatch(?, ?, ?, ?, ?, ?)',
+            [match_id_str, sport_display_name, team1, team2, match_time, oddsJson]
+        );
+
+        res.status(200).json({ message: 'Match and odds updated successfully.' });
+
+    } catch (err) {
+        console.error('Database transaction error (update match):', err);
+        res.status(500).json({ error: 'Failed to update match and odds in the database.' });
+    }
+});
+
+// New: DELETE a match and its associated odds
+app.delete('/api/matches/:match_id_str', async (req, res) => {
+    const { match_id_str } = req.params;
+
+    try {
+        // The stored procedure handles deleting from both tables
+        await pool.query('CALL sp_DeleteMatch(?)', [match_id_str]);
+        res.status(200).json({ message: 'Match and associated odds deleted successfully.' });
+
+    } catch (err) {
+        console.error('Database transaction error (delete match):', err);
+        res.status(500).json({ error: 'Failed to delete match and odds from the database.' });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+/*
+* =========================================
+* API TO GET ALL MATCHES
+* =========================================
+*/
 app.get('/api/matches', async (req, res) => {
     try {
         const sql = `
@@ -96,7 +262,6 @@ app.get('/api/matches', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch matches and odds from the database.' });
     }
 });
-
 
 
 
