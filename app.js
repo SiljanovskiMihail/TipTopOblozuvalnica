@@ -45,15 +45,27 @@ app.get('/', (req, res) => {
 
 
 
+
+// Admin access control middleware
+function isAdmin(req, res, next) {
+    if (req.session.loggedIn && req.session.username === 'ADMIN') {
+        next(); 
+    } else {
+        console.log(`Access denied for user: ${req.session.username || 'Guest'}`);
+        res.redirect('/'); 
+    }
+}
+
+
+
 /*
 * =========================================
 * ADMIN ROUTE
 * =========================================
 */
-app.get('/admin', (req, res) => {
+app.get('/admin', isAdmin,(req, res) => {
     res.sendFile(__dirname + '/views/adminPanel.html');
 });
-
 
 
 
@@ -113,7 +125,7 @@ app.get('/api/matches/:match_id_str', async (req, res) => {
         res.json(match);
     } catch (err) {
         console.error('Database query error (GET single match):', err);
-        res.status(500).json({ error: 'Failed to fetch match details.' });
+        res.status(500).json({ error: 'Грешка при превземање на утакмиците.' });
     }
 });
 
@@ -125,7 +137,7 @@ app.post('/api/matches', async (req, res) => {
     const { match_id_num, sport_display_name, team1, team2, match_time, odds } = req.body;
 
     if (!match_id_num || !sport_display_name || !team1 || !team2 || !match_time) {
-        return res.status(400).json({ error: 'Missing required match fields.' });
+        return res.status(400).json({ error: 'Сите полиња треба да се пополнат.' });
     }
 
     try {
@@ -137,15 +149,15 @@ app.post('/api/matches', async (req, res) => {
             [match_id_num, sport_display_name, team1, team2, match_time, oddsJson]
         );
 
-        res.status(201).json({ message: 'Match and odds added successfully.', matchId: `match_${match_id_num}` });
+        res.status(201).json({ message: 'Утакмицата успешно додадена.', matchId: `match_${match_id_num}` });
 
     } catch (err) {
         console.error('Database transaction error (add match):', err);
         // Check for duplicate entry error from the database
         if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ error: `Match ID 'match_${match_id_num}' already exists.` });
+            return res.status(409).json({ error: `Утакмицата со ID 'match_${match_id_num}' веќе постои.` });
         }
-        res.status(500).json({ error: 'Failed to add match and odds to the database.' });
+        res.status(500).json({ error: 'Грешка при внес на утакмицата.' });
     }
 });
 
@@ -156,7 +168,7 @@ app.put('/api/matches/:match_id_str', async (req, res) => {
     const { sport_display_name, team1, team2, match_time, odds } = req.body;
 
     if (!sport_display_name || !team1 || !team2 || !match_time) {
-        return res.status(400).json({ error: 'Missing required match fields for update.' });
+        return res.status(400).json({ error: 'Полињата треба да бидат пополнати.' });
     }
 
     try {
@@ -168,11 +180,11 @@ app.put('/api/matches/:match_id_str', async (req, res) => {
             [match_id_str, sport_display_name, team1, team2, match_time, oddsJson]
         );
 
-        res.status(200).json({ message: 'Match and odds updated successfully.' });
+        res.status(200).json({ message: 'Утакмицата успешно едитирана.' });
 
     } catch (err) {
         console.error('Database transaction error (update match):', err);
-        res.status(500).json({ error: 'Failed to update match and odds in the database.' });
+        res.status(500).json({ error: 'Грешка при зачувување во базата.' });
     }
 });
 
@@ -183,11 +195,11 @@ app.delete('/api/matches/:match_id_str', async (req, res) => {
     try {
         // The stored procedure handles deleting from both tables
         await pool.query('CALL sp_DeleteMatch(?)', [match_id_str]);
-        res.status(200).json({ message: 'Match and associated odds deleted successfully.' });
+        res.status(200).json({ message: 'Утакмицата успешно избришана.' });
 
     } catch (err) {
         console.error('Database transaction error (delete match):', err);
-        res.status(500).json({ error: 'Failed to delete match and odds from the database.' });
+        res.status(500).json({ error: 'Грешка при бришење на такмицата.' });
     }
 });
 
@@ -323,6 +335,7 @@ app.post('/login', async (req, res) => {
 
         req.session.userId = user.id;
         req.session.username = user.username;
+        req.session.loggedIn = true;
 
         res.status(200).json({
             message: 'Успешна најава!',

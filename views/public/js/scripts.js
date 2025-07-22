@@ -67,13 +67,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Functions for Logged In/Out States ---
 
-    const updateUIForLoggedInUser = (username) => {
+     window.updateUIForLoggedInUser = (username) => {
         if (accountButton) accountButton.textContent = username;
         if (dropdownContent) {
-            dropdownContent.innerHTML = `
-                <a href="/my-tickets.html">Мои тикети</a>
-                <a href="#" id="logout-btn">Одјава</a>
-            `;
+            let dropdownHtml = '';
+            if (username === 'ADMIN') {
+                dropdownHtml = `
+                    <a href="/admin">Утакмици</a>
+                    <a href="/users.html">Корисници</a> <!-- Link for future Users page -->
+                    <a href="#" id="logout-btn">Одјава</a>
+                `;
+            } else {
+                dropdownHtml = `
+                    <a href="/my-tickets.html">Мои тикети</a>
+                    <a href="#" id="logout-btn">Одјава</a>
+                `;
+            }
+            dropdownContent.innerHTML = dropdownHtml;
+
             // Re-attach listener for the NEW logout button
             const logoutBtn = document.getElementById('logout-btn');
             if (logoutBtn) {
@@ -135,6 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (response.ok) {
                 updateUIForLoggedOutUser(); 
+                window.location.href = '/';
             } else {
                 alert(`Error: ${result.message}`);
             }

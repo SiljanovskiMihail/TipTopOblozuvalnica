@@ -219,7 +219,7 @@ main {
 }
 
 .match-card {
-    background-color: #065f46; 
+    background-color: rgba(4, 120, 87, 0.5); ; 
     border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -1056,15 +1056,11 @@ main {
     }
 }
 
-
-
-
-
-
-
-
-/* views/public/css/admin.css */
-
+/*
+* =========================================
+* ADMIN PANEL
+* =========================================
+*/
 .admin-section {
     background-color: #065f46;
     border-radius: 0.5rem;
@@ -1091,6 +1087,12 @@ main {
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #d1d5db;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .admin-form input[type="text"],
@@ -1226,8 +1228,30 @@ main {
     background-color: #069668;
 }
 
+.delete-confirm-actions .btn-delete {
+    background-color: #ef4444;
+    color: #f3f4f6;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin-top: 1rem;
+    display: inline-block; /* For adding odd fields */
+}
+
+.delete-confirm-actions .btn-delete:hover {
+    background-color: #dc2626;
+}
+
 .admin-form .form-submit-btn {
     margin-top: 2rem;
+    width: auto;              /* Shrink to fit the content */
+    display: block;           /* Makes margin auto work */
+    margin-left: auto;
+    margin-right: auto;       /* Centers the button */
 }
 
 .form-message {
@@ -1239,13 +1263,11 @@ main {
 }
 
 .form-message.success {
-    background-color: #a7f3d0;
-    color: #064e3b;
+    color: #a7f3d0;
 }
 
 .form-message.error {
-    background-color: #fca5a5;
-    color: #880000;
+    color: #fca5a5;
 }
 
 /* Match card specific for admin panel */
@@ -1282,12 +1304,20 @@ main {
 .admin-match-list .match-card .match-actions {
     display: flex;
     gap: 0.75rem;
-    margin-top: 1rem;
     justify-content: flex-end;
 }
 
-.admin-match-list .match-actions .btn-edit,
-.admin-match-list .match-actions .btn-delete {
+#admin-match-list .match-actions { /* Changed .admin-match-list to #admin-match-list */
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center; /* To center the buttons */
+    align-items: center;
+}
+
+/* Styles for the Edit and Delete buttons */
+#admin-match-list .match-actions .btn-edit, /* Changed .admin-match-list to #admin-match-list */
+#admin-match-list .match-actions .btn-delete { /* Changed .admin-match-list to #admin-match-list */
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 0.375rem;
@@ -1297,28 +1327,57 @@ main {
     font-size: 0.9rem;
 }
 
-.admin-match-list .match-actions .btn-edit {
+/* Specific colors for Edit button */
+#admin-match-list .match-actions .btn-edit { /* Changed .admin-match-list to #admin-match-list */
     background-color: #f59e0b;
     color: #1f2937;
 }
 
-.admin-match-list .match-actions .btn-edit:hover {
+#admin-match-list .match-actions .btn-edit:hover { /* Changed .admin-match-list to #admin-match-list */
     background-color: #d97706;
 }
 
-.admin-match-list .match-actions .btn-delete {
+/* Specific colors for Delete button */
+#admin-match-list .match-actions .btn-delete { /* Changed .admin-match-list to #admin-match-list */
     background-color: #ef4444;
     color: #f3f4f6;
 }
 
-.admin-match-list .match-actions .btn-delete:hover {
+#admin-match-list .match-actions .btn-delete:hover { /* Changed .admin-match-list to #admin-match-list */
     background-color: #dc2626;
 }
 
 /* Modal specific for Admin Panel (adjustments) */
 #edit-match-modal .modal-content {
+    top: 200px;
     max-width: 600px; /* Wider for more form fields */
 }
+
+        .admin-controls {
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-controls label { /* NEW RULE for the label inside admin-controls */
+    display: block; /* Ensures the label takes its own line */
+    margin-bottom: 0.5rem; /* Adds space below the label, pushing the input down */
+    color: #d1d5db; /* Matches the color of other labels in the admin panel */
+    font-weight: 500; /* Matches the font-weight of other labels */
+}
+        .admin-controls input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #047857;
+            border-radius: 0.375rem;
+            background-color: #047857;
+            color: #f3f4f6;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .admin-controls input[type="text"]:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px #22c55e;
+        }
 
 
 /* Responsive adjustments */
@@ -1340,12 +1399,74 @@ main {
     margin-bottom: 0; /* Remove default bottom margin as gap handles spacing */
 }
 
-/* Optional: Make inputs/selects in this row fill available space */
+/* Ensure inputs/selects in this row fill available space and have consistent box model and height */
 .form-row .form-group input,
 .form-row .form-group select {
     width: 100%; /* Ensure they fill their parent .form-group */
+    box-sizing: border-box; /* Ensures padding and border are included in the 100% width */
+    background-color: #047857;
+    color: white;
+    border-radius: 0.375rem;
+    padding: 0.75rem; /* Unified padding for all sides */
+    border: 1px solid transparent;
+    outline: none;
+    height: 2.75rem; /* Explicit height to ensure consistency across different input types and select */
+    font-size: 1rem; /* Ensure font size is consistent, as it affects height */
 }
 
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 200px; /* Prevents fields from becoming too small */
+    margin-bottom: 0;
+}
+
+.odds-section h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+        
+.main-odds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+.main-odd-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+.main-odd-group label {
+            font-weight: bold;
+            text-align: center; 
+            font-size: 1.2rem;
+        }
+        
+.extra-odds-container .odd-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+.extra-odds-container .odd-type-input {
+            flex: 2;
+        }
+
+.extra-odds-container .odd-value-input {
+            flex: 1;
+        }
+
+        
 /* Responsive adjustment for smaller screens if needed */
 @media (max-width: 600px) {
     .form-row {

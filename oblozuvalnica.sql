@@ -31,7 +31,7 @@ CREATE TABLE `matches` (
   `match_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `match_id_str` (`match_id_str`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `matches` (
 
 LOCK TABLES `matches` WRITE;
 /*!40000 ALTER TABLE `matches` DISABLE KEYS */;
-INSERT INTO `matches` VALUES (1,'match_0001','Фудбал','Wolfs','Everton','2025-06-21 21:00:00'),(2,'match_0002','Кошарка','Vardar','Pelister','2025-06-21 22:30:00'),(3,'match_0008','Ракомет','Germany','France','2025-06-22 22:00:00'),(4,'match_0006','Еспорт','Fnatic','G2 Esports','2025-06-23 13:00:00'),(6,'match_1000','Фудбал','RFS','Levadia','2025-07-18 18:45:00');
+INSERT INTO `matches` VALUES (1,'match_0001','Фудбал','Wolfs','Everton','2025-06-21 21:00:00'),(2,'match_0002','Кошарка','Vardar','Pelister','2025-06-21 22:30:00'),(3,'match_0008','Ракомет','Germany','France','2025-06-22 22:00:00'),(4,'match_0006','Еспорт','Fnatic','G2 Esports','2025-06-23 13:00:00'),(6,'match_1000','Фудбал','RFS','Levadia','2025-07-18 18:45:00'),(8,'match_1001','Фудбал','Ajax','PSV','2025-07-21 15:15:00'),(13,'match_0010','Еспорт','NAVI','B8','2025-07-30 00:00:00');
 /*!40000 ALTER TABLE `matches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `odds` (
   PRIMARY KEY (`id`),
   KEY `match_id_str` (`match_id_str`),
   CONSTRAINT `odds_ibfk_1` FOREIGN KEY (`match_id_str`) REFERENCES `matches` (`match_id_str`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE `odds` (
 
 LOCK TABLES `odds` WRITE;
 /*!40000 ALTER TABLE `odds` DISABLE KEYS */;
-INSERT INTO `odds` VALUES (1,'match_0001','1',2.50,1),(2,'match_0001','X',3.40,1),(3,'match_0001','2',2.80,1),(4,'match_0001','1-1',3.50,0),(5,'match_0001','2-2',3.80,0),(6,'match_0001','3+',1.80,0),(7,'match_0001','4+',2.50,0),(8,'match_0001','2+I',2.20,0),(9,'match_0001','2+II',2.10,0),(10,'match_0002','1',4.65,1),(11,'match_0002','X',16.00,1),(12,'match_0002','2',1.10,1),(13,'match_0002','>60.5',1.70,0),(14,'match_0002','<60.5',2.00,0),(15,'match_0002','1-1',8.40,0),(16,'match_0002','2-2',1.45,0),(17,'match_0002','I > II',1.90,0),(18,'match_0002','II > I',1.90,0),(19,'match_0008','1',2.15,1),(20,'match_0008','X',6.00,1),(21,'match_0008','2',1.90,1),(22,'match_0008','1-1',2.80,0),(23,'match_0008','2-2',2.50,0),(24,'match_0008','>60.5',1.85,0),(25,'match_0008','<60.5',1.95,0),(26,'match_0008','I > II',1.70,0),(27,'match_0008','II > I',2.10,0),(28,'match_0006','1',1.80,1),(29,'match_0006','X',7.00,1),(30,'match_0006','2',1.95,1),(31,'match_0006','>2.5',1.60,0),(32,'match_0006','<2.5',2.20,0),(33,'match_0006','2:0',2.80,0),(34,'match_0006','0:2',3.00,0),(35,'match_0006','1:2',2.50,0),(36,'match_0006','2:1',2.40,0),(55,'match_1000','1',1.44,1),(56,'match_1000','X',4.75,1),(57,'match_1000','2',5.25,1),(58,'match_1000','2+I',2.45,0),(59,'match_1000','2+II',2.20,0),(60,'match_1000','3+',1.60,0),(61,'match_1000','4+',2.25,0),(62,'match_1000','1-1',1.90,0),(63,'match_1000','2+I/2+II',1.70,0);
+INSERT INTO `odds` VALUES (1,'match_0001','1',2.50,1),(2,'match_0001','X',3.40,1),(3,'match_0001','2',2.80,1),(4,'match_0001','1-1',3.50,0),(5,'match_0001','2-2',3.80,0),(6,'match_0001','3+',1.80,0),(7,'match_0001','4+',2.50,0),(8,'match_0001','2+I',2.20,0),(9,'match_0001','2+II',2.10,0),(10,'match_0002','1',4.65,1),(11,'match_0002','X',16.00,1),(12,'match_0002','2',1.10,1),(13,'match_0002','>60.5',1.70,0),(14,'match_0002','<60.5',2.00,0),(15,'match_0002','1-1',8.40,0),(16,'match_0002','2-2',1.45,0),(17,'match_0002','I > II',1.90,0),(18,'match_0002','II > I',1.90,0),(19,'match_0008','1',2.15,1),(20,'match_0008','X',6.00,1),(21,'match_0008','2',1.90,1),(22,'match_0008','1-1',2.80,0),(23,'match_0008','2-2',2.50,0),(24,'match_0008','>60.5',1.85,0),(25,'match_0008','<60.5',1.95,0),(26,'match_0008','I > II',1.70,0),(27,'match_0008','II > I',2.10,0),(28,'match_0006','1',1.80,1),(29,'match_0006','X',7.00,1),(30,'match_0006','2',1.95,1),(31,'match_0006','>2.5',1.60,0),(32,'match_0006','<2.5',2.20,0),(33,'match_0006','2:0',2.80,0),(34,'match_0006','0:2',3.00,0),(35,'match_0006','1:2',2.50,0),(36,'match_0006','2:1',2.40,0),(55,'match_1000','1',1.44,1),(56,'match_1000','X',4.75,1),(57,'match_1000','2',5.25,1),(58,'match_1000','2+I',2.45,0),(59,'match_1000','2+II',2.20,0),(60,'match_1000','3+',1.60,0),(61,'match_1000','4+',2.25,0),(62,'match_1000','1-1',1.90,0),(63,'match_1000','2+I/2+II',1.70,0),(64,'match_1001','1',2.50,1),(65,'match_1001','X',4.00,1),(66,'match_1001','2',2.50,1),(67,'match_1001','3+',1.40,0),(68,'match_1001','4+',1.80,0),(69,'match_1001','2+I',1.95,0),(70,'match_1001','2+II',1.85,0),(71,'match_1001','2-1',35.00,0),(72,'match_1001','1-2',35.00,0),(101,'match_0010','1',1.25,1),(102,'match_0010','X',16.00,1),(103,'match_0010','2',3.85,1),(104,'match_0010','<2.5',1.90,0),(105,'match_0010','>2.5',1.90,0),(106,'match_0010','0:2',9.65,0),(107,'match_0010','1:2',6.55,0),(108,'match_0010','2:0',1.80,0),(109,'match_0010','2:1',1.45,0);
 /*!40000 ALTER TABLE `odds` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +114,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `user_private_id` (`user_private_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +190,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_AddMatch`(
-    IN p_match_id_num INT,
+    IN p_match_id_num VARCHAR(4),
     IN p_sport_display_name VARCHAR(50),
     IN p_team1 VARCHAR(100),
     IN p_team2 VARCHAR(100),
@@ -198,18 +198,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_AddMatch`(
     IN p_odds_json TEXT
 )
 BEGIN
-    DECLARE v_match_id_str VARCHAR(20);
+    -- v_match_id_str will now correctly concatenate 'match_' with the VARCHAR ID (e.g., '0001')
+    DECLARE v_match_id_str VARCHAR(20); 
     DECLARE v_index INT DEFAULT 0;
     DECLARE v_odd_count INT;
     DECLARE v_odd_type VARCHAR(20);
     DECLARE v_odd_value DECIMAL(8, 2);
     DECLARE v_is_main_odd BOOLEAN;
 
-    SET v_match_id_str = CONCAT('match_', p_match_id_num);
+    SET v_match_id_str = CONCAT('match_', p_match_id_num); -- This will now produce 'match_0001'
 
+    -- Insert into matches table
     INSERT INTO matches (match_id_str, sport_display_name, team1, team2, match_time)
     VALUES (v_match_id_str, p_sport_display_name, p_team1, p_team2, p_match_time);
 
+    -- Process and insert odds
     IF p_odds_json IS NOT NULL AND JSON_VALID(p_odds_json) AND JSON_TYPE(p_odds_json) = 'ARRAY' THEN
         SET v_odd_count = JSON_LENGTH(p_odds_json);
 
@@ -315,4 +318,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-15 19:14:01
+-- Dump completed on 2025-07-22 15:42:45
