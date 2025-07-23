@@ -1228,6 +1228,11 @@ input[type=number]::-webkit-inner-spin-button {
     background-color: #069668;
 }
 
+#delete-confirm-content {
+    text-align: center; /* Center the paragraph text */
+}
+
+
 .delete-confirm-actions .btn-delete {
     background-color: #ef4444;
     color: #f3f4f6;
@@ -1238,7 +1243,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 0.9rem;
     font-weight: 600;
     transition: background-color 0.2s ease;
-    margin-top: 1rem;
     display: inline-block; /* For adding odd fields */
 }
 

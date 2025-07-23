@@ -1,41 +1,33 @@
+const registerForm = document.getElementById('register-form');
 
-    const registerForm = document.getElementById('register-form');
+registerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-    registerForm.addEventListener('submit', async (event) => {
-        // 1. Prevent the default browser behavior (page reload)
-        event.preventDefault();
+    // FormData will now include the file
+    const formData = new FormData(registerForm);
+    const messageArea = document.getElementById('message-area');
 
-        // 2. Gather the form data
-        const formData = new FormData(registerForm);
-        const data = Object.fromEntries(formData.entries());
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            // DO NOT set Content-Type header manually.
+            // The browser will set it to 'multipart/form-data' automatically.
+            body: formData 
+        });
 
-        // A simple element to display messages. Add this to your HTML.
-        const messageArea = document.getElementById('message-area'); 
+        const result = await response.json();
 
-        try {
-            // 3. Send the data to the server using fetch
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            // 4. Handle the server's response
-            if (response.ok) { 
-                messageArea.textContent = result.message;
-                messageArea.style.color = 'green';
-                registerForm.reset(); // Clear the form on success
-            } else { 
-                messageArea.textContent = result.message;
-                messageArea.style.color = 'red';
-            }
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            messageArea.textContent = 'Грешка во мрежата. Обидете се повторно.'; 
+        if (response.ok) {
+            messageArea.textContent = result.message;
+            messageArea.style.color = 'green';
+            registerForm.reset();
+        } else {
+            messageArea.textContent = result.message;
             messageArea.style.color = 'red';
         }
-    });
+    } catch (error) {
+        console.error('Fetch Error:', error);
+        messageArea.textContent = 'Грешка во мрежата. Обидете се повторно.';
+        messageArea.style.color = 'red';
+    }
+});

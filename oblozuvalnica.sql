@@ -31,7 +31,7 @@ CREATE TABLE `matches` (
   `match_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `match_id_str` (`match_id_str`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `odds` (
   PRIMARY KEY (`id`),
   KEY `match_id_str` (`match_id_str`),
   CONSTRAINT `odds_ibfk_1` FOREIGN KEY (`match_id_str`) REFERENCES `matches` (`match_id_str`)
-) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,10 +111,12 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `user_private_id` varchar(255) NOT NULL,
+  `id_photo_path` varchar(255) NOT NULL,
+  `is_verified` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `user_private_id` (`user_private_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +125,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'mihail','$2b$10$Smf96HyBK8EH8BJNssuiMu6ZS/IYy7Kb68NdzI.uvk8J/MYdy0kgS','$2b$10$nnEALPsaulESCyKay07yE.ZmRcWohlP415uK4gUvLQT45NYgmKrca'),(2,'mihail1','$2b$10$HsAJseO6ZDJ7Vkd6c2/PPO7W0gsAnC4gpljoQCEbmT4C62SKYd8Zm','$2b$10$qWyuioZjxA6o0rcZgLbL6eHKlj.cwh1n9Y0VKuQ5Coqpipm2wqEOG'),(3,'mihail2','$2b$10$Xj7Dk2fO1S82VjtZZjw.1.L4S1/y37VvuTlGtrZPiCZ1wI9xj6hei','$2b$10$fy.jNhAxCbLHoRgzEHkfqu9ozpQBIE.aabLXJhzcspAij9yQvzsiK'),(4,'mihail3','$2b$10$ehb0B.JNWU6Y0fb7M1IWd.9qo1Gi42i.tbgkY6IP75ksKSGamyZHG','$2b$10$9IZXx92Ef5ZYYILZESLomOpkax321ws60laCAzjhm8UfNpo6AOIe2'),(5,'mihail4','$2b$10$q4hcqN.QPsCbVXRxnIabIufHWKZ73.2HUr7sQh0lKVVGMs8D4OBl6','$2b$10$m2lPe.cZuPJJhpiRcJVQBe/UHT7D4WXVFPpzfYwX4iAVGS1I1kV4O'),(6,'mihail5','$2b$10$FNLRS4dZoWaaOtLY8Qg9F.nxmrjILHWTReOep3hS4.YRxj6K/VcZi','$2b$10$AKfku3RxvXFHSe5YN47IxebqD3cqsBCLxh4YrtHr8d.09FJfPxZM.'),(7,'asfsafsafsafasfas','$2b$10$C5xuNGzvihFD5NZKackhSeOSpLoNZFbj4SuqgLycROE3dplTc/TBq','$2b$10$lQJi9t57fzNXFWGuCu.NDu1L.SNtEbXWQVQ1nF0UMzUQ8JiRVlrZW'),(8,'mihailllll','$2b$10$GXm31eha6mqYNADi3F17E.OFmUpaCBUT.TiE2eLKo.mIM2TjtRf32','$2b$10$Qk01R857zE0o5L8bWeWFWeux/h1U0WR98xfayYV979/ELFINqZD8m'),(9,'mihail12','$2b$10$AdwxsOY3Bh7Dl3AEb4fIvuKS4nWS/jBE5iGCrvtewwA0/eSNrVH6m','$2b$10$dM8zPxRO.bJ0oDpUGw263.9QlDdlGMLBL0hPs0MygOTu4GNu8r7Ey'),(10,'mihail14','$2b$10$ObW6t8ky9fnjXmNoAvMWcOcjQU.x644FdSKHvkkivD.tIJze3fIi6','$2b$10$aEfAxOKuzuFox30krhWMreUeurIVvoQwhocBQ0RLEKH8Yv8LR9442'),(11,'ADMIN','$2b$10$seQ1kStAGjV0VwXOR.o6g.hB..TpuSZDYb6kZOeAGvRzYqbTEyYjO','$2b$10$tuGpR6oJfkB3wGlPeZUzJeL0v2EY16NoBdRXWhGIjT8paM0JGQWPK');
+INSERT INTO `users` VALUES (1,'mihail','$2b$10$Smf96HyBK8EH8BJNssuiMu6ZS/IYy7Kb68NdzI.uvk8J/MYdy0kgS','$2b$10$nnEALPsaulESCyKay07yE.ZmRcWohlP415uK4gUvLQT45NYgmKrca','',0),(11,'ADMIN','$2b$10$seQ1kStAGjV0VwXOR.o6g.hB..TpuSZDYb6kZOeAGvRzYqbTEyYjO','$2b$10$tuGpR6oJfkB3wGlPeZUzJeL0v2EY16NoBdRXWhGIjT8paM0JGQWPK','',1),(14,'jovana','$2b$10$jQQJLYBUWgGJgZLDNcL0vubzhF6hFUL9ilqwRmFaD6eKRddFQOm3C','$2b$10$RJkd7xT2SefznB7n898QY.F1j4UbqkRVGuWoU5py6flw6H0Eqi9mC','uploads\\ids\\id-photo-1753277432728-250891756.jpg',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,11 +170,12 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RegisterUser`(
     IN p_username VARCHAR(255),
     IN p_hashedPassword VARCHAR(255),
-    IN p_hashedMatichen VARCHAR(255) 
+    IN p_hashedMatichen VARCHAR(255),
+    IN p_id_photo_path VARCHAR(255) -- New parameter for the photo path
 )
 BEGIN
-    INSERT INTO users (username, password, user_private_id)
-    VALUES (p_username, p_hashedPassword, p_hashedMatichen);
+    INSERT INTO users (username, password, user_private_id, id_photo_path, is_verified)
+    VALUES (p_username, p_hashedPassword, p_hashedMatichen, p_id_photo_path, 0); -- Set is_verified to 0
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -318,4 +321,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-22 15:42:45
+-- Dump completed on 2025-07-23 15:54:25
