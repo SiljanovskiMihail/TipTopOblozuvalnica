@@ -116,7 +116,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `user_private_id` (`user_private_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +125,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'mihail','$2b$10$Smf96HyBK8EH8BJNssuiMu6ZS/IYy7Kb68NdzI.uvk8J/MYdy0kgS','$2b$10$nnEALPsaulESCyKay07yE.ZmRcWohlP415uK4gUvLQT45NYgmKrca','',0),(11,'ADMIN','$2b$10$seQ1kStAGjV0VwXOR.o6g.hB..TpuSZDYb6kZOeAGvRzYqbTEyYjO','$2b$10$tuGpR6oJfkB3wGlPeZUzJeL0v2EY16NoBdRXWhGIjT8paM0JGQWPK','',1),(14,'jovana','$2b$10$jQQJLYBUWgGJgZLDNcL0vubzhF6hFUL9ilqwRmFaD6eKRddFQOm3C','$2b$10$RJkd7xT2SefznB7n898QY.F1j4UbqkRVGuWoU5py6flw6H0Eqi9mC','uploads\\ids\\id-photo-1753277432728-250891756.jpg',1);
+INSERT INTO `users` VALUES (11,'ADMIN','$2b$10$seQ1kStAGjV0VwXOR.o6g.hB..TpuSZDYb6kZOeAGvRzYqbTEyYjO','$2b$10$tuGpR6oJfkB3wGlPeZUzJeL0v2EY16NoBdRXWhGIjT8paM0JGQWPK','',1),(14,'jovana','$2b$10$jQQJLYBUWgGJgZLDNcL0vubzhF6hFUL9ilqwRmFaD6eKRddFQOm3C','$2b$10$RJkd7xT2SefznB7n898QY.F1j4UbqkRVGuWoU5py6flw6H0Eqi9mC','uploads\\ids\\id-photo-1753277432728-250891756.jpg',1),(15,'mihail','$2b$10$U7ROIL/aha9vjmHoojGNZuT5iKh0/VF.7Ew6UToZrAJ9bK0g4ONaq','$2b$10$eNgnJvCYIQkBHZDQFu50d.4WEiY4nI1Sml2.ngAR4bQZDqtZUiaHe','uploads\\ids\\id-photo-1753361571965-890272960.jpg',1),(16,'mihail1','$2b$10$BFWQSRNpw5ZewqWTTHC6nerKr/VpW0V3UuRHQ/Ulf1PIUeZAmYiF6','$2b$10$csMJT/sB8KB.Z7/5mlttF.8yyeaRYx4RDvasQIQ3OfWhvEYtQMZO.','uploads\\ids\\id-photo-1753363460224-414950927.jpg',1),(21,'test1','$2b$10$hrSoObeG2U6NU4m85KKXA.TAHYdCBlJb5rOR9NiQSR020xgQiYGQO','$2b$10$e23jlGKxyJWOAEnshB10aOgxjjozdDD9UPn09Y2rhVFi7B4a4.gK.','id-photo-1753667306920-496000926.png',1),(22,'test2','$2b$10$zRGFcHoF2dL2x5SbkcPdde52JWcpv5vb0wLpc/NEJ2vK318Ph7gsm','$2b$10$WvZK7yT2Q7N6TZ.8xW5DOeQjhUVmQoaXxeymXbtMks2RP7sAiBD.W','id-photo-1753667328034-470294469.png',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,4 +321,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-23 15:54:25
+-- Dump completed on 2025-07-28 16:05:06

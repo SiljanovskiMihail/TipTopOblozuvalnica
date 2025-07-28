@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // --- Functions for Logged In/Out States ---
-
      window.updateUIForLoggedInUser = (username) => {
         if (accountButton) accountButton.textContent = username;
         if (dropdownContent) {
@@ -74,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (username === 'ADMIN') {
                 dropdownHtml = `
                     <a href="/admin">Утакмици</a>
-                    <a href="/users.html">Корисници</a> <!-- Link for future Users page -->
+                    <a href="/users">Корисници</a> 
                     <a href="#" id="logout-btn">Одјава</a>
                 `;
             } else {

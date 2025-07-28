@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTop - Корисници</title>
+    <link rel="icon" type="image/png" href="views/public/images/LogoLogo.png">
+    <link rel="stylesheet" href="views/public/css/styles.css">
+    <style>
+        /* Specific styles for the user approval panel */
+
+    </style>
+</head>
+<body>
+    <header>
+        <div id="header-placeholder"></div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Управување со Корисници</h1>
+            <p>Прегледајте и одобрете нови регистрации.</p>
+        </div>
+
+        <section class="admin-section">
+            <h2>Неверифицирани Корисници</h2>
+            <div id="unverified-users-list" class="user-list-grid">
+                <!-- User cards will be dynamically loaded here -->            
+            </div>
+            <div id="unverified-users-message" class="form-message"></div>
+
+        </section>
+    </main>
+
+    <!-- DELETE USER CONFIRMATION MODAL -->
+    <div id="delete-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="delete-user-modal-close-btn">&times;</span>
+            <h2>Потврди Бришење Корисник</h2>
+            <div id="delete-user-confirm-content">
+                <p>Дали сте сигурни дека сакате да го избришете корисникот <strong id="delete-user-info"></strong>?</p>
+                <div class="delete-confirm-actions">
+                    <button id="confirm-delete-user-btn" class="btn-reject">ДА</button>
+                    <button id="cancel-delete-user-btn" class="btn-secondary">НЕ</button>
+                </div>
+            </div>
+            <div id="delete-user-confirm-message" class="form-message" style="margin-top: 1rem;"></div>
+            <input type="hidden" id="delete-user-id-hidden">
+        </div>
+    </div>
+
+    <script src="views/public/js/adminUsers.js"></script>
+    <script type="module" src="views/public/js/scripts.js"></script>
+</body>
+</html>

@@ -8,12 +8,12 @@ const app = express();
 const session = require('express-session');
 const multer = require('multer');
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
 app.use(express.static(__dirname));
+app.use('/uploads', express.static('uploads'));
 
 
 
@@ -35,10 +35,11 @@ app.use(session({
 
 
 
-
-
-
-// 1. Configure Multer for file storage
+/*
+* =========================================
+* MULTER FOR FILE STORAGE
+* =========================================
+*/
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/ids/'); // Make sure this directory exists!
@@ -51,6 +52,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
 
 
 
@@ -92,7 +95,92 @@ app.get('/admin', isAdmin,(req, res) => {
 
 
 
-// New: GET single match by ID (for edit modal)
+
+
+
+// Admin Panel for Users
+app.get('/users', isAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'adminUsers.html'));
+});
+
+// API to get all unverified users (is_verified = 0)
+app.get('/api/unverified-users', isAdmin, async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT id, username, id_photo_path FROM users WHERE is_verified = 0');
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching unverified users:', error);
+        res.status(500).json({ error: 'Грешка при вчитување на неверифицирани корисници.' });
+    }
+});
+
+app.put('/api/users/:id/verify', isAdmin, async (req, res) => {
+    const { id } = req.params;
+    const { adminInputId } = req.body;
+
+    if (!adminInputId) {
+        return res.status(400).json({ error: 'Внесениот ID недостасува.' });
+    }
+
+    try {
+        const [users] = await pool.query('SELECT user_private_id FROM users WHERE id = ?', [id]);
+        const user = users[0];
+
+        if (!user) {
+            return res.status(404).json({ error: 'Корисникот не е пронајден.' });
+        }
+
+        // --- NEW HASH COMPARISON LOGIC ---
+        // Compare the admin's input ID with the hashed ID from the database
+        const match = await bcrypt.compare(adminInputId, user.user_private_id);
+
+        if (!match) {
+            return res.status(400).json({ error: 'Внесениот ID не се совпаѓа со регистрираниот ID.' });
+        }
+        // --- END OF NEW LOGIC ---
+
+        // If the IDs match, proceed with verification
+        const [result] = await pool.query('UPDATE users SET is_verified = 1 WHERE id = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Корисникот не е пронајден.' });
+        }
+
+        res.json({ message: 'Корисникот успешно верифициран.' });
+
+    } catch (error) {
+        console.error('Error verifying user:', error);
+        res.status(500).json({ error: 'Грешка при верификација на корисникот.' });
+    }
+});
+
+// API to reject/delete a user
+app.delete('/api/users/:id', isAdmin, async (req, res) => {
+    const { id } = req.params; // This 'id' is the primary key 'id' from the users table
+    try {
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Корисникот не е пронајден.' });
+        }
+        res.json({ message: 'Корисникот успешно избришан.' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Грешка при бришење на корисникот.' });
+    }
+});
+
+
+
+
+
+
+
+
+/*
+* =========================================
+* GET SINGLE MATCH BY ID FOR EDIT
+* =========================================
+*/
 app.get('/api/matches/:match_id_str', async (req, res) => {
     const { match_id_str } = req.params;
     try {
@@ -153,8 +241,12 @@ app.get('/api/matches/:match_id_str', async (req, res) => {
 });
 
 
-// New: POST (Add) a new match and its odds
-// POST (Add) a new match and its odds
+
+/*
+* =========================================
+* ADD NEW MATCH
+* =========================================
+*/
 app.post('/api/matches', async (req, res) => {
     // Note: The frontend now sends match_id_num, which is just the number.
     const { match_id_num, sport_display_name, team1, team2, match_time, odds } = req.body;
@@ -184,8 +276,13 @@ app.post('/api/matches', async (req, res) => {
     }
 });
 
-// New: PUT (Update) an existing match and its odds
-// PUT (Update) an existing match and its odds
+
+
+/*
+* =========================================
+* UPDATE EXXISTING MATCH
+* =========================================
+*/
 app.put('/api/matches/:match_id_str', async (req, res) => {
     const { match_id_str } = req.params;
     const { sport_display_name, team1, team2, match_time, odds } = req.body;
@@ -225,14 +322,6 @@ app.delete('/api/matches/:match_id_str', async (req, res) => {
         res.status(500).json({ error: 'Грешка при бришење на такмицата.' });
     }
 });
-
-
-
-
-
-
-
-
 
 
 
@@ -406,7 +495,6 @@ app.post('/logout', (req, res) => {
 
 
 
-
 /*
 * =========================================
 * KONTAKT ROUTE
@@ -468,7 +556,7 @@ app.post('/register', upload.single('id-photo'), async (req, res) => {
         'register-matichen': user_private_id,
         'register-password': password
     } = req.body;
-    const idPhotoPath = req.file.path;
+    const idPhotoPath = req.file.filename.replace(/\\/g, '/');
 
     // --- Validation (No changes needed, your validation is good) ---
     if (!username || !user_private_id || !password) {
