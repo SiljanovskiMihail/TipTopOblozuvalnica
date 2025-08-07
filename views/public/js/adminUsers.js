@@ -157,6 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error);
+            const userCardToRemove = document.querySelector(`.user-card[data-user-id="${userId}"]`);
+            if (userCardToRemove) {
+                userCardToRemove.remove();
+                console.log(`[UI] User card for ID ${userId} removed successfully.`);
+            }
             showMessage(deleteUserConfirmMessage, data.message, true); // Show message in modal
 
         } catch (error) {

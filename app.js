@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const session = require('express-session');
 const multer = require('multer');
+const fs = require('fs').promises;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -158,10 +159,28 @@ app.put('/api/users/:id/verify', isAdmin, async (req, res) => {
 app.delete('/api/users/:id', isAdmin, async (req, res) => {
     const { id } = req.params; // This 'id' is the primary key 'id' from the users table
     try {
+        // 1. Get the image path from the database
+        const [rows] = await pool.query('SELECT id_photo_path FROM users WHERE id = ?', [id]);
+        const user = rows[0];
+
+        // 2. If a user with an image path is found, delete the file
+        if (user && user.id_photo_path) {
+            const imagePath = path.join(__dirname, 'uploads', 'ids', user.id_photo_path);
+            try {
+                // Delete the file from the uploads directory
+                await fs.unlink(imagePath);
+            } catch (fileError) {
+                // Log the error but continue, as the database deletion is more critical
+                console.error(`[WARN] Failed to delete image file at ${imagePath}:`, fileError);
+            }
+        }
+
+        // 3. Delete the user record from the database
         const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Корисникот не е пронајден.' });
         }
+
         res.json({ message: 'Корисникот успешно избришан.' });
     } catch (error) {
         console.error('Error deleting user:', error);
