@@ -1,8 +1,5 @@
-        // Betting Slip elements (assuming these are *not* dynamically loaded after DOMContentLoaded)
-
-
-    // --- 6. Betting Slip Logic ---
-    function initializeBettingSlip(matchList) {
+// --- 6. Betting Slip Logic ---
+function initializeBettingSlip(matchList) {
     let selectedBets = [];
 
     const bettingSlipContainer = document.getElementById('betting-slip-container');
@@ -17,13 +14,65 @@
     const taxAmountValue = document.getElementById('tax-amount-value');
     const finalPayoutValue = document.getElementById('final-payout-value');
 
-    const updateTotals = () => {
+    // --- Custom Pop-up Function ---
+    const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
+        const popup = document.createElement('div');
+        popup.classList.add('ticket-popup');
 
+        const popupContent = document.createElement('div');
+        popupContent.classList.add('ticket-popup-content');
+        popupContent.innerHTML = `
+            <button class="popup-close-btn">&times;</button>
+            <h3>${title}</h3>
+            <p>${message}</p>
+            <div class="popup-actions">
+                <button class="popup-ok-btn">OK</button>
+                ${isConfirm ? '<button class="popup-cancel-btn">Cancel</button>' : ''}
+            </div>
+        `;
+        popup.appendChild(popupContent);
+        document.body.appendChild(popup);
+
+        return new Promise((resolve) => {
+            const closePopup = () => {
+                document.body.removeChild(popup);
+            };
+
+            // Event listener for the "OK" button
+            popupContent.querySelector('.popup-ok-btn').addEventListener('click', () => {
+                closePopup();
+                resolve(true);
+            });
+
+            // Event listener for the "Cancel" button if it exists
+            if (isConfirm) {
+                popupContent.querySelector('.popup-cancel-btn').addEventListener('click', () => {
+                    closePopup();
+                    resolve(false);
+                });
+            }
+            
+            // Event listener for the close button
+            popupContent.querySelector('.popup-close-btn').addEventListener('click', closePopup);
+
+            // Event listener to close the popup when clicking outside the content
+            popup.addEventListener('click', (event) => {
+                if (event.target.classList.contains('ticket-popup')) {
+                    closePopup();
+                    // Resolves with false if the user clicks outside to close a confirm-type popup
+                    if (isConfirm) resolve(false); 
+                    // Otherwise, just closes
+                }
+            });
+        });
+    };
+
+    const updateTotals = () => {
         const TAX_RATE = 0.15;
         const totalOdds = selectedBets.reduce((total, bet) => total * parseFloat(bet.oddValue), 1);
         const stake = parseFloat(stakeInput ? stakeInput.value : '0') || 0;
         const potentialWinnings = totalOdds * stake;
-        const taxAmount = (potentialWinnings - stake) * TAX_RATE;
+        const taxAmount = (potentialWinnings > stake) ? (potentialWinnings - stake) * TAX_RATE : 0;
         const finalPayout = potentialWinnings - taxAmount;
 
         let selectionText = `${selectedBets.length} Утакмици`;
@@ -108,7 +157,7 @@
                 if (existingBetFromMatch) {
                     selectedBets = selectedBets.filter(b => b.matchId !== matchId);
                     const oldSelectedButton = matchCard.querySelector('.btn-odd.selected');
-                    if(oldSelectedButton) oldSelectedButton.classList.remove('selected');
+                    if (oldSelectedButton) oldSelectedButton.classList.remove('selected');
                 }
                 clickedButton.classList.add('selected');
                 selectedBets.push({ matchId, teams, betType, oddValue, betId });
@@ -142,7 +191,68 @@
         });
     }
 
-    // Event listeners for the stake input and clear button
+    const placeBetBtn = document.querySelector('.btn-place-bet');
+
+    if (placeBetBtn) {
+        placeBetBtn.addEventListener('click', async () => {
+            const stake = parseFloat(stakeInput.value);
+            if (!stake || stake <= 0) {
+                showTicketPopup('Please enter a valid stake amount.', 'Error');
+                return;
+            }
+            if (selectedBets.length === 0) {
+                showTicketPopup('Please select at least one match.', 'Error');
+                return;
+            }
+
+            const ticketData = {
+                num_matches: selectedBets.length,
+                total_odds: parseFloat(totalOddsValue.textContent),
+                stake: stake,
+                payout: parseFloat(potentialWinningsValue.textContent),
+                payout_after_tax: parseFloat(finalPayoutValue.textContent),
+                matches: selectedBets.map(bet => {
+                    const [team1, team2] = bet.teams.split(' vs ');
+                    const matchCard = document.getElementById(bet.matchId);
+                    const matchDate = (matchCard && matchCard.dataset.matchDate) ?
+                        matchCard.dataset.matchDate :
+                        new Date().toISOString().split('T')[0];
+
+                    return {
+                        match_id: bet.matchId,
+                        team1: team1.trim(),
+                        team2: team2.trim(),
+                        match_date: matchDate,
+                        bet_type: bet.betType,
+                        odd_value: parseFloat(bet.oddValue)
+                    };
+                })
+            };
+
+            try {
+                const response = await fetch('/create-ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ticketData),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showTicketPopup(`Ticket created successfully! Your Ticket ID is: ${result.ticketId}`, 'Success');
+                    if (clearSlipBtn) clearSlipBtn.click();
+                } else {
+                    showTicketPopup(`Error: ${result.message}`, 'Error');
+                }
+            } catch (error) {
+                console.error('Failed to create ticket:', error);
+                showTicketPopup('A network error occurred. Please try again.', 'Error');
+            }
+        });
+    }
+
     if (stakeInput) {
         stakeInput.addEventListener('keyup', updateTotals);
         stakeInput.addEventListener('change', updateTotals);
@@ -157,4 +267,4 @@
     }
 
     updateBettingSlip();
-    }
+}

@@ -56,11 +56,6 @@ const upload = multer({ storage: storage });
 
 
 
-
-
-
-
-
 /*
 * =========================================
 * INDEX ROUTE
@@ -69,7 +64,6 @@ const upload = multer({ storage: storage });
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-
 
 
 
@@ -93,9 +87,6 @@ function isAdmin(req, res, next) {
 app.get('/admin', isAdmin,(req, res) => {
     res.sendFile(__dirname + '/views/adminPanel.html');
 });
-
-
-
 
 
 
@@ -187,11 +178,6 @@ app.delete('/api/users/:id', isAdmin, async (req, res) => {
         res.status(500).json({ error: 'Грешка при бришење на корисникот.' });
     }
 });
-
-
-
-
-
 
 
 
@@ -405,6 +391,113 @@ app.get('/api/matches', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch matches and odds from the database.' });
     }
 });
+
+
+
+
+
+
+
+
+
+
+app.post('/create-ticket', async (req, res) => {
+    // Destructure the data from the request body
+    const { num_matches, total_odds, stake, payout, payout_after_tax, matches } = req.body;
+
+    // Get user_id from session if logged in, otherwise it's NULL
+    const userId = req.session.userId || null;
+
+    // --- Database Transaction ---
+    let connection;
+    try {
+        // 1. Get a connection from the pool
+        connection = await pool.getConnection();
+
+        // 2. Start the transaction
+        await connection.beginTransaction();
+
+        // 3. Generate the unique, human-readable ticket ID
+        function generateTicketId() {
+            const chars = '0123456789';
+            let result = '';
+            for (let i = 0; i < 9; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // 4. Generate a unique ticket ID and check for its existence in the database.
+        let uniqueTicketId;
+        let isIdUnique = false;
+
+        do {
+            uniqueTicketId = generateTicketId();
+            const [rows] = await connection.query('SELECT ticket_id FROM tickets WHERE ticket_id = ?', [uniqueTicketId]);
+            if (rows.length === 0) {
+                isIdUnique = true;
+            }
+        } while (!isIdUnique);
+
+        // 4. Insert into the `tickets` table using a stored procedure
+        const [ticketResult] = await connection.query('CALL InsertTicket(?, ?, ?, ?, ?, ?, ?)', [
+            uniqueTicketId,
+            userId,
+            num_matches,
+            total_odds,
+            stake,
+            payout,
+            payout_after_tax
+        ]);
+
+        // The stored procedure for tickets should return the auto-incremented ID
+        const newTicketRecordId = ticketResult[0][0].insertId;
+
+        // 5. Insert each match into the `ticket_matches` table using a stored procedure
+        const matchPromises = matches.map(match => {
+            const parts = match.match_id.split('match_');
+            const uniquePart = parts.pop();
+            const processedMatchId = 'match_' + uniquePart;
+
+            return connection.query('CALL InsertTicketMatch(?, ?, ?, ?, ?, ?, ?)', [
+                newTicketRecordId,
+                processedMatchId,
+                match.team1,
+                match.team2,
+                match.match_date,
+                match.bet_type,
+                match.odd_value
+            ]);
+        });
+        
+        await Promise.all(matchPromises);
+
+        // 6. If all queries were successful, commit the transaction
+        await connection.commit();
+
+        // 7. Send success response back to the client
+        res.status(201).json({
+            success: true,
+            message: 'Ticket created successfully!',
+            ticketId: uniqueTicketId
+        });
+
+    } catch (error) {
+        // 8. If any query failed, roll back the entire transaction
+        if (connection) {
+            await connection.rollback();
+        }
+        console.error('Transaction failed:', error);
+        res.status(500).json({ success: false, message: 'Database error. Could not create the ticket.' });
+
+    } finally {
+        // 9. Always release the connection back to the pool
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
 
 
 

@@ -100,6 +100,72 @@ INSERT INTO `poraki` VALUES (1,'Test Eden','testeden@example.com','Test 1'),(2,'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ticket_matches`
+--
+
+DROP TABLE IF EXISTS `ticket_matches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ticket_matches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ticket_id` int DEFAULT NULL,
+  `match_id` varchar(255) NOT NULL,
+  `team1` varchar(255) NOT NULL,
+  `team2` varchar(255) NOT NULL,
+  `match_date` date NOT NULL,
+  `bet_type` varchar(50) NOT NULL,
+  `odd_value` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ticket_id` (`ticket_id`),
+  CONSTRAINT `ticket_matches_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_matches`
+--
+
+LOCK TABLES `ticket_matches` WRITE;
+/*!40000 ALTER TABLE `ticket_matches` DISABLE KEYS */;
+INSERT INTO `ticket_matches` VALUES (1,3,'match_match_0002','Vardar','Pelister','2025-08-11','1',4.65),(2,3,'match_match_0008','Germany','France','2025-08-11','1',2.15),(3,4,'match_match_0008','Germany','France','2025-08-12','1',2.15),(4,4,'match_match_0006','Fnatic','G2 Esports','2025-08-12','1',1.80),(5,5,'match_0001','Wolfs','Everton','2025-08-12','1',2.50),(6,5,'match_0002','Vardar','Pelister','2025-08-12','2',1.10),(7,6,'match_0001','Wolfs','Everton','2025-08-12','2',2.80),(8,14,'match_0002','Vardar','Pelister','2025-08-12','2',1.10),(9,15,'match_0001','Wolfs','Everton','2025-08-12','1-1',3.50),(10,15,'match_0002','Vardar','Pelister','2025-08-12','I > II',1.90),(11,15,'match_1000','RFS','Levadia','2025-08-12','3+',1.60),(12,15,'match_0010','NAVI','B8','2025-08-12','>2.5',1.90),(13,16,'match_0002','Vardar','Pelister','2025-08-12','1',4.65),(14,17,'match_0001','Wolfs','Everton','2025-08-12','X',3.40);
+/*!40000 ALTER TABLE `ticket_matches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tickets`
+--
+
+DROP TABLE IF EXISTS `tickets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tickets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ticket_id` varchar(9) NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `num_matches` int NOT NULL,
+  `total_odds` decimal(10,2) NOT NULL,
+  `stake` decimal(10,2) NOT NULL,
+  `payout` decimal(10,2) NOT NULL,
+  `payout_after_tax` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ticket_id` (`ticket_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tickets`
+--
+
+LOCK TABLES `tickets` WRITE;
+/*!40000 ALTER TABLE `tickets` DISABLE KEYS */;
+INSERT INTO `tickets` VALUES (3,'0OUDJWZ2S',15,2,10.00,100.00,999.75,864.79,'2025-08-11 23:57:56'),(4,'175974443',15,2,3.87,500.00,1935.00,1719.75,'2025-08-12 00:25:59'),(5,'818511840',NULL,2,2.75,50.00,137.50,124.38,'2025-08-12 00:29:46'),(6,'633242571',NULL,1,2.80,1000.00,2800.00,2530.00,'2025-08-12 00:37:57'),(7,'949985503',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:02'),(8,'417112217',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:45'),(9,'235604609',NULL,1,16.00,22.00,352.00,302.50,'2025-08-12 12:42:44'),(10,'926686425',NULL,2,33.25,33.00,1097.25,937.61,'2025-08-12 12:46:12'),(14,'037833656',NULL,1,1.10,1000.00,1100.00,1085.00,'2025-08-12 13:04:15'),(15,'685126918',15,4,20.22,50.00,1010.80,866.68,'2025-08-12 13:06:19'),(16,'417557417',15,1,4.65,20.00,93.00,82.05,'2025-08-12 13:38:54'),(17,'823075541',15,1,3.40,10.00,34.00,30.40,'2025-08-12 13:43:13');
+/*!40000 ALTER TABLE `tickets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -151,6 +217,64 @@ BEGIN
     INSERT INTO poraki (imePrezime, email, poraka)
     VALUES (_imePrezime, _email, _poraka);
     SELECT LAST_INSERT_ID() AS id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertTicket` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTicket`(
+    IN p_ticket_id VARCHAR(255),
+    IN p_user_id INT,
+    IN p_num_matches INT,
+    IN p_total_odds DECIMAL(10, 2),
+    IN p_stake DECIMAL(10, 2),
+    IN p_payout DECIMAL(10, 2),
+    IN p_payout_after_tax DECIMAL(10, 2)
+)
+BEGIN
+    INSERT INTO tickets (ticket_id, user_id, num_matches, total_odds, stake, payout, payout_after_tax)
+    VALUES (p_ticket_id, p_user_id, p_num_matches, p_total_odds, p_stake, p_payout, p_payout_after_tax);
+    
+    SELECT LAST_INSERT_ID() AS insertId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertTicketMatch` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTicketMatch`(
+    IN p_ticket_id INT,
+    IN p_match_id VARCHAR(255),
+    IN p_team1 VARCHAR(255),
+    IN p_team2 VARCHAR(255),
+    IN p_match_date DATETIME,
+    IN p_bet_type VARCHAR(255),
+    IN p_odd_value DECIMAL(10, 2)
+)
+BEGIN
+    INSERT INTO ticket_matches (ticket_id, match_id, team1, team2, match_date, bet_type, odd_value)
+    VALUES (p_ticket_id, p_match_id, p_team1, p_team2, p_match_date, p_bet_type, p_odd_value);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -321,4 +445,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-07 15:18:28
+-- Dump completed on 2025-08-12 15:49:46
