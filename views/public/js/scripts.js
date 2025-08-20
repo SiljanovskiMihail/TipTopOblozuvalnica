@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load the header component first. Execution will pause here until it's done.
     await loadComponent('header-placeholder', '../views/header.html');
 
+    // --- 2. Element Selectors ---
     const accountButton = document.getElementById('account-button');
     const dropdownContent = document.getElementById('dropdown-content');
 
@@ -35,28 +36,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     const showRegisterLink = document.getElementById('show-register');
     const showLoginLink = document.getElementById('show-login');
 
-    
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileDropdownContent = document.getElementById('mobile-dropdown-content');
 
+    // --- 3. Event Delegation (The Fix) ---
+    const handleDropdownClick = (event) => {
+        const targetLink = event.target.closest('a');
+        if (!targetLink) return; // Exit if the click wasn't on a link
 
-    // Modal display functions
+        const action = targetLink.getAttribute('id');
+        if (action === 'login-btn') {
+            event.preventDefault();
+            openModal(loginModal);
+        } else if (action === 'register-btn') {
+            event.preventDefault();
+            openModal(registerModal);
+        } else if (action === 'logout-btn') {
+            event.preventDefault();
+            handleLogout(event);
+        }
+    };
+
+    if (dropdownContent) {
+        dropdownContent.addEventListener('click', handleDropdownClick);
+    }
+    if (mobileDropdownContent) {
+        mobileDropdownContent.addEventListener('click', handleDropdownClick);
+    }
+
+    // --- 4. Modal Display Functions ---
     const openModal = (modal) => {
         if (modal) {
-            // Close the other modal if it's open
             if (modal === loginModal && registerModal) registerModal.style.display = 'none';
             if (modal === registerModal && loginModal) loginModal.style.display = 'none';
 
             if (modal === loginModal && loginForm) {
-                loginForm.reset(); // This clears username and password fields
+                loginForm.reset();
                 if (messageLogin) {
-                    messageLogin.textContent = ''; // This clears the server message
+                    messageLogin.textContent = '';
                 }
             }
-
-            modal.style.display = 'block'; // Or 'flex' if using flexbox for centering
+            modal.style.display = 'block';
         }
-        // Close the dropdown when any modal is opened
         if (dropdownContent && dropdownContent.classList.contains('show-dropdown')) {
             dropdownContent.classList.remove('show-dropdown');
+        }
+        if (mobileDropdownContent && mobileDropdownContent.classList.contains('show-dropdown')) {
+            mobileDropdownContent.classList.remove('show-dropdown');
         }
     };
 
@@ -65,62 +91,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (registerModal) registerModal.style.display = 'none';
     };
 
-    // --- Functions for Logged In/Out States ---
-     window.updateUIForLoggedInUser = (username) => {
+    // --- 5. UI Update Functions for BOTH Menus ---
+    window.updateUIForLoggedInUser = (username) => {
         if (accountButton) accountButton.textContent = username;
-        if (dropdownContent) {
-            let dropdownHtml = '';
-            if (username === 'ADMIN') {
-                dropdownHtml = `
-                    <a href="/admin">Утакмици</a>
-                    <a href="/users">Корисници</a> 
-                    <a href="#" id="logout-btn">Одјава</a>
-                `;
-            } else {
-                dropdownHtml = `
-                    <a href="/my-tickets.html">Мои тикети</a>
-                    <a href="#" id="logout-btn">Одјава</a>
-                `;
-            }
-            dropdownContent.innerHTML = dropdownHtml;
+        if (mobileMenuToggle) mobileMenuToggle.textContent = username;
 
-            // Re-attach listener for the NEW logout button
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', handleLogout);
-            }
+        const loggedInHtml = (username === 'ADMIN') ?
+            `<a href="/admin">Утакмици</a><a href="/users">Корисници</a><a href="#" id="logout-btn">Одјава</a>` :
+            `<a href="/my-tickets">Мои тикети</a><a href="#" id="logout-btn">Одјава</a>`;
+
+        if (dropdownContent) {
+            dropdownContent.innerHTML = loggedInHtml;
+        }
+        if (mobileDropdownContent) {
+            const mobileLinks = `<a href="../views/promoci.html">Промоции</a><a href="../views/contact.html">Контакт</a><hr class="separator">`;
+            mobileDropdownContent.innerHTML = mobileLinks + loggedInHtml;
         }
     };
 
     const updateUIForLoggedOutUser = () => {
         if (accountButton) accountButton.textContent = 'Анонимен';
+
+        const loggedOutHtml = `<a href="#" id="login-btn">Најава</a><a href="#" id="register-btn">Регисрација</a>`;
+
         if (dropdownContent) {
-            dropdownContent.innerHTML = `
-                <a href="#" id="login-btn">Најава</a>
-                <a href="#" id="register-btn">Регисрација</a>
-            `;
-
-            // CRUCIAL: Re-attach listeners to the NEWLY CREATED login/register links
-            const newLoginBtn = document.getElementById('login-btn');
-            const newRegisterBtn = document.getElementById('register-btn');
-
-            if (newLoginBtn) {
-                newLoginBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    openModal(loginModal);
-                });
-            }
-            if (newRegisterBtn) {
-                newRegisterBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    openModal(registerModal);
-                });
-            }
+            dropdownContent.innerHTML = loggedOutHtml;
+        }
+        if (mobileDropdownContent) {
+            const mobileLinks = `<a href="../views/promoci.html">Промоции</a><a href="../views/contact.html">Контакт</a><hr class="separator">`;
+            mobileDropdownContent.innerHTML = mobileLinks + loggedOutHtml;
         }
     };
 
-    // --- Session & Authentication Handlers ---
-
+    // --- 6. Session & Authentication Handlers ---
     const checkSession = async () => {
         try {
             const response = await fetch('/session-status');
@@ -133,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (error) {
             console.error('Error checking session status:', error);
-            updateUIForLoggedOutUser(); 
+            updateUIForLoggedOutUser();
         }
     };
 
@@ -144,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const result = await response.json();
 
             if (response.ok) {
-                updateUIForLoggedOutUser(); 
+                updateUIForLoggedOutUser();
                 window.location.href = '/';
             } else {
                 alert(`Error: ${result.message}`);
@@ -161,15 +164,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Dropdown Toggle for "Анонимен" / username button
     if (accountButton && dropdownContent) {
         accountButton.addEventListener('click', (event) => {
-            event.stopPropagation(); 
+            event.stopPropagation();
             dropdownContent.classList.toggle('show-dropdown');
         });
 
-        // Close the dropdown if the user clicks outside of it
         window.addEventListener('click', (event) => {
             if (dropdownContent && !accountButton.contains(event.target) && !dropdownContent.contains(event.target)) {
-                 dropdownContent.classList.remove('show-dropdown');
+                dropdownContent.classList.remove('show-dropdown');
             }
+        });
+    }
+
+    // Mobile Menu Toggle
+    if (mobileMenuToggle && mobileDropdownContent) {
+        mobileMenuToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            mobileDropdownContent.classList.toggle('show-dropdown');
         });
     }
 
@@ -181,8 +191,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const formData = new FormData(loginForm);
             const data = Object.fromEntries(formData.entries());
 
-
-            
             try {
                 const response = await fetch('/login', {
                     method: 'POST',
@@ -195,14 +203,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     messageLogin.textContent = result.message;
                     messageLogin.style.color = 'green';
                     updateUIForLoggedInUser(result.username);
-                    closeModal(); 
+                    closeModal();
                 } else {
                     messageLogin.textContent = result.message;
                     messageLogin.style.color = 'red';
                 }
             } catch (error) {
                 console.error('Login failed:', error);
-                messageLogin.textContent = 'Грешка во мрежата. Обидете се повторно.'; 
+                messageLogin.textContent = 'Грешка во мрежата. Обидете се повторно.';
                 messageLogin.style.color = 'red';
             }
         });
@@ -231,17 +239,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (showRegisterLink) {
         showRegisterLink.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal(registerModal); 
+            openModal(registerModal);
         });
     }
 
     if (showLoginLink) {
         showLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
-            openModal(loginModal); 
+            openModal(loginModal);
         });
     }
 
+    // --- 7. Script Loading and Initialization ---
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -253,22 +262,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     try {
-        // Load all scripts concurrently
         await Promise.all([
             loadScript('/views/public/js/register.js'),
             loadScript('/views/public/js/filter.js'),
+            loadScript('/views/public/js/matches.js'),
             loadScript('/views/public/js/bettingslip.js')
         ]);
 
         console.log("All scripts loaded successfully.");
 
-        // --- 3. Initialize Functionality ---
-        // Now that all scripts are loaded, find the critical element ONCE.
         const matchList = document.getElementById('match-list');
 
         if (matchList) {
-            // Call the functions from the loaded scripts, passing the element.
-            // This ensures they only run when the element exists.
             initializeFilters(matchList);
             initializeBettingSlip(matchList);
         } else {
@@ -278,5 +283,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error("Failed to load a required script:", error);
     }
-
 });

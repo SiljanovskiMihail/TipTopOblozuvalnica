@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTop - Грешка</title>
+    <style>
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #065f46; /* A single, solid dark green */
+    color: #f3f4f6;
+    margin: 0;
+    min-height: 100vh;
+    padding-bottom: 1rem;
+}
+
+/* =========================================
+* ERROR PAGE STYLES
+* ========================================= */
+.error-card {
+    background-color: rgba(4, 120, 87, 0.5); /* Matches the promotion-card background */
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-icon {
+    margin: 0 auto 1.5rem;
+    display: inline-block;
+    background-color: #fca5a5;
+    padding: 1rem;
+    border-radius: 9999px;
+}
+
+.error-icon svg {
+    color: #ef4444;
+    height: 4rem;
+    width: 4rem;
+}
+
+.error-card h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #f3f4f6;
+}
+
+.error-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+}
+
+.error-card a {
+    display: inline-block;
+    background-color: #0d9488;
+    color: #fff;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.error-card a:hover {
+    background-color: #14b8a6;
+}
+
+.page-header {
+    text-align: center;
+    color: #f3f4f6;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(243, 244, 246, 0.2);
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+}
+
+/* =========================================
+* MOBILE STYLES (for screens up to 600px wide)
+* ========================================= */
+@media (max-width: 600px) {
+    .error-card {
+        padding: 2rem 1rem; /* Reduced padding for smaller screens */
+    }
+
+    .error-card h1 {
+        font-size: 1.8rem; /* Smaller font size for the main heading */
+    }
+
+    .error-card p {
+        font-size: 0.85rem; /* Smaller font size for the paragraph text */
+    }
+
+    .error-card a {
+        padding: 0.6rem 1.5rem; /* Smaller button for mobile */
+        font-size: 0.9rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div id="header-placeholder"></div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Имаше Грешка</h1>
+        </div>
+
+        <div class="error-card">
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <p>
+                Жалиме, но нешто тргна наопаку. Ве молиме обидете се повторно подоцна.
+            </p>
+            <div>
+                <a href="/">Назад кон почетната</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="public/js/scripts.js"></script>
+
+</body>
+</html>

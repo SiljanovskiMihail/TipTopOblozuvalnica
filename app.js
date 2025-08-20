@@ -66,7 +66,6 @@ app.get('/', (req, res) => {
 });
 
 
-
 // Admin access control middleware
 function isAdmin(req, res, next) {
     if (req.session.loggedIn && req.session.username === 'ADMIN') {
@@ -87,8 +86,6 @@ function isAdmin(req, res, next) {
 app.get('/admin', isAdmin,(req, res) => {
     res.sendFile(__dirname + '/views/adminPanel.html');
 });
-
-
 
 // Admin Panel for Users
 app.get('/users', isAdmin, (req, res) => {
@@ -459,12 +456,11 @@ app.post('/create-ticket', async (req, res) => {
             const uniquePart = parts.pop();
             const processedMatchId = 'match_' + uniquePart;
 
-            return connection.query('CALL InsertTicketMatch(?, ?, ?, ?, ?, ?, ?)', [
+            return connection.query('CALL InsertTicketMatch(?, ?, ?, ?, ?, ?)', [
                 newTicketRecordId,
                 processedMatchId,
                 match.team1,
                 match.team2,
-                match.match_date,
                 match.bet_type,
                 match.odd_value
             ]);
@@ -478,7 +474,7 @@ app.post('/create-ticket', async (req, res) => {
         // 7. Send success response back to the client
         res.status(201).json({
             success: true,
-            message: 'Ticket created successfully!',
+            message: 'Тикетот е успешно креиран',
             ticketId: uniqueTicketId
         });
 
@@ -488,7 +484,7 @@ app.post('/create-ticket', async (req, res) => {
             await connection.rollback();
         }
         console.error('Transaction failed:', error);
-        res.status(500).json({ success: false, message: 'Database error. Could not create the ticket.' });
+        res.status(500).json({ success: false, message: 'Серверска грешка!' });
 
     } finally {
         // 9. Always release the connection back to the pool
@@ -607,6 +603,103 @@ app.post('/logout', (req, res) => {
 
 
 
+
+app.get('/my-tickets',(req, res) => {
+    res.sendFile(__dirname + '/views/my-tickets.html');
+});
+
+app.get('/api/my-tickets', async (req, res) => {
+    // Check if the user is logged in
+    if (!req.session || !req.session.userId) {
+        return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    try {
+        const userId = req.session.userId;
+        // SQL query to get tickets and all their corresponding matches
+        const query = `
+            SELECT
+                t.id, t.ticket_id, t.num_matches, t.total_odds, t.stake, t.payout,
+                t.payout_after_tax, t.created_at,
+                tm.match_id, tm.team1, tm.team2, tm.bet_type, tm.odd_value
+            FROM tickets t
+            JOIN ticket_matches tm ON t.id = tm.ticket_id
+            WHERE t.user_id = ?
+            ORDER BY t.created_at DESC, tm.id ASC;
+        `;
+        const [rows] = await pool.query(query, [userId]);
+
+        if (rows.length === 0) {
+            return res.json([]); // Return empty array if no tickets found
+        }
+
+        // Group matches by ticket ID
+        const ticketsMap = new Map();
+        rows.forEach(row => {
+            if (!ticketsMap.has(row.id)) {
+                ticketsMap.set(row.id, {
+                    id: row.id,
+                    ticket_id: row.ticket_id,
+                    num_matches: row.num_matches,
+                    total_odds: row.total_odds,
+                    stake: row.stake,
+                    payout: row.payout,
+                    payout_after_tax: row.payout_after_tax,
+                    created_at: row.created_at,
+                    matches: []
+                });
+            }
+            ticketsMap.get(row.id).matches.push({
+                match_id: row.match_id,
+                team1: row.team1,
+                team2: row.team2,
+                bet_type: row.bet_type,
+                odd_value: row.odd_value
+            });
+        });
+
+        res.json(Array.from(ticketsMap.values()));
+
+    } catch (error) {
+        console.error('Error fetching user tickets:', error);
+        res.status(500).json({ message: 'Серверска грешка.' });
+    }
+});
+
+// ENDPOINT 2: Delete a ticket
+app.delete('/api/tickets/:id', async (req, res) => {
+    if (!req.session || !req.session.userId) {
+        return res.status(401).json({ message: 'Нема авторизација!' });
+    }
+
+    try {
+        const ticketIdToDelete = req.params.id;
+        const userId = req.session.userId;
+
+        // The 'ON DELETE CASCADE' in your table schema is perfect here.
+        // Deleting from 'tickets' will automatically remove related 'ticket_matches'.
+        // We add 'user_id = ?' to ensure users can only delete their own tickets.
+        const [result] = await pool.query('CALL delete_ticket(?, ?)', [ticketIdToDelete, userId]);
+
+        if (result.affectedRows > 0) {
+            res.json({ message: 'Ticket deleted successfully.' });
+        } else {
+            // This happens if the ticket doesn't exist or doesn't belong to the user
+            res.status(404).json({ message: 'Тикетот не е пронајден!' });
+        }
+    } catch (error) {
+        console.error('Error deleting ticket:', error);
+        res.status(500).json({ message: 'Серверска грешка.' });
+    }
+});
+
+
+
+
+
+
+
+
 /*
 * =========================================
 * KONTAKT ROUTE
@@ -616,14 +709,14 @@ app.post('/poraki', async (req, res) => {
     const { imePrezime, email, poraka } = req.body;
 
     if (!imePrezime || !email || !poraka) {
-        return res.status(400).json({ success: false, message: 'All fields (imePrezime, email, poraka) are required.' });
+        return res.status(400).json({ success: false, message: 'Сите полиња се задолжителни!' });
     }
     if (imePrezime.length > 255 || email.length > 255 || poraka.length > 255) {
-         return res.status(400).json({ success: false, message: 'Input fields cannot exceed 255 characters.' });
+         return res.status(400).json({ success: false, message: 'Максимум 255 карактери!' });
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        return res.status(400).json({ success: false, message: 'Invalid email format.' });
+        return res.status(400).json({ success: false, message: 'Невалиден е-маил формат!' });
     }
 
     try {
@@ -732,6 +825,15 @@ app.post('/register', upload.single('id-photo'), async (req, res) => {
         res.status(500).json({ message: 'Настана грешка при регистрацијата.' });
     }
 });
+
+
+
+
+
+app.get(/(.*)/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'error.html'));
+});
+
 
 
 app.listen(PORT, () => {

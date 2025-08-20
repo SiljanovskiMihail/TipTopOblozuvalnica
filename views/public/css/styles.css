@@ -81,9 +81,7 @@ header {
     vertical-align: middle;
 }
 
-.main-nav {
-    display: none;
-}
+
 
 .auth-dropdown {
     position: relative;
@@ -153,6 +151,15 @@ textarea::placeholder {
     text-align: center; 
     font-size: 1.5em;
 }
+
+#mobile-menu-container {
+    display: none; /* Hide the mobile container by default */
+}
+
+
+
+
+
 
 /*
 * =========================================
@@ -970,91 +977,6 @@ main {
 }
 
 
-/*
-* =========================================
-* RESPONSIVE MEDIA QUERIES
-* =========================================
-*/
-@media (min-width: 640px) {
-    .container {
-        max-width: 640px;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-
-    .filters-bar {
-        flex-direction: row;
-        gap: 0;
-    }
-
-    .football-bets-container .main-odds,
-    .football-bets-container .extra-odds {
-        gap: 1rem;
-    }
-
-    .football-bets-container .extra-odds {
-        margin-top: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .container {
-        max-width: 768px;
-    }
-
-    .main-nav {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    .main-nav-links {
-        display: flex;
-        align-items: baseline;
-        gap: 1rem;
-    }
-
-    .main-nav-links a {
-        color: #d1d5db;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.375rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: background-color 0.2s, color 0.2s;
-    }
-
-    .main-nav-links a:hover {
-        background-color: #047857;
-        color: #ffffff;
-    }
-
-    .auth-button {
-        display: flex;
-    }
-
-    .promotions-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .container {
-        max-width: 1024px;
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
-    
-    .promotions-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .container {
-        max-width: 1280px;
-    }
-}
 
 /*
 * =========================================
@@ -1213,15 +1135,13 @@ input[type=number]::-webkit-inner-spin-button {
 .btn-secondary {
     background-color: #047857;
     color: #f3f4f6;
-    padding: 0.6rem 1.2rem;
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.375rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    transition: background-color 0.2s ease;
-    margin-top: 1rem;
-    display: inline-block; /* For adding odd fields */
+    transition: background-color 0.2s;
 }
 
 .btn-secondary:hover {
@@ -1230,20 +1150,20 @@ input[type=number]::-webkit-inner-spin-button {
 
 #delete-confirm-content {
     text-align: center; /* Center the paragraph text */
+    
 }
 
 
 .delete-confirm-actions .btn-delete {
     background-color: #ef4444;
     color: #f3f4f6;
-    padding: 0.6rem 1.2rem;
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.375rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    transition: background-color 0.2s ease;
-    display: inline-block; /* For adding odd fields */
+    transition: background-color 0.2s;
 }
 
 .delete-confirm-actions .btn-delete:hover {
@@ -1706,6 +1626,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .ticket-popup-content p {
     margin-bottom: 1.5rem;
+    text-align: center;
     color: #d1d5db; /* A lighter color for paragraph text */
 }
 
@@ -1723,6 +1644,24 @@ input[type=number]::-webkit-inner-spin-button {
     transition: background-color 0.2s;
 }
 
+.popup-cancel-btn {
+    background-color: #22c55e;
+    color: #064e3b;
+}
+
+.popup-cancel-btn:hover {
+    background-color: #16a34a;
+}
+
+.popup-yes-btn {
+    background-color: #ef4444;
+    color: white;
+}
+
+.popup-yes-btn:hover {
+    background-color: #dc2626;
+}
+
 .popup-ok-btn {
     background-color: #22c55e;
     color: #064e3b;
@@ -1732,23 +1671,539 @@ input[type=number]::-webkit-inner-spin-button {
     background-color: #16a34a;
 }
 
-.popup-cancel-btn {
-    background-color: #f44336;
-    color: white;
+
+/* --- My Tickets Page Styling --- */
+
+
+
+#my-tickets-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.no-tickets-message {
+    background: #064e3b;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    color: #d1d5db;
+    font-size: 1.1rem;
+}
+
+.ticket-card {
+    background: #064e3b;
+    border: 1px solid #047857;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.ticket-summary-header {
+    padding: 1rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    cursor: pointer;
+    background-color: #055f46;
+    color: #f3f4f6;
+    align-items: center;
+}
+
+.ticket-summary-header:hover {
+    background-color: #047857;
+}
+
+.ticket-summary-header .info-item {
+    font-size: 0.9rem;
+}
+
+.ticket-summary-header .info-item span {
+    display: block;
+    font-size: 0.8rem;
+    color: #a3e635; /* Lime green for values */
+}
+
+.ticket-details {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+    padding: 0 1.5rem;
+    color: #d1d5db;
+}
+
+/* Expanded state for ticket details */
+.ticket-card.expanded .ticket-details {
+    max-height: 1000px; /* Large enough to fit content */
+    opacity: 1;
+}
+
+.match-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* Adjust the space between columns */
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #065f46;
+    font-size: 0.95rem;
+}
+
+.match-item:last-child {
+    border-bottom: none;
+}
+
+.match-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row; /* Changed from 'column' to 'row' */
+    justify-content: space-between; /* Pushes teams left, meta right */
+    align-items: center;
+    gap: 1rem;
+}
+
+.match-teams {
+    flex-grow: 1; /* This makes the teams column take all available space */
+    flex-shrink: 1;
+    font-weight: bold;
+    color: #f9fafb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds "..." if team names are too long */
+}
+
+.match-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Adds space between date and bet type */
+    flex-shrink: 0; /* Prevents this block from shrinking */
+}
+.match-odd {
+    flex-basis: 50px; /* Fixed width for the odd */
+    flex-shrink: 0;
+    font-weight: bold;
+    color: #a3e635;
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+.match-odd {
+    flex-basis: 50px; /* Fixed width for the odd */
+    flex-shrink: 0;
+    font-weight: bold;
+    color: #a3e635;
+    font-size: 1.1rem;
+    text-align: right;
 }
 
 
 
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    background-color: #064e3b;
+    border-top: 1px solid #055f46;
+}
+
+.ticket-actions button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-resend-ticket {
+    background-color: #f59e0b;
+}
+.btn-resend-ticket:hover {
+    background-color: #d97706;
+}
+
+.btn-delete-ticket {
+    background-color: #ef4444;
+}
+.btn-delete-ticket:hover {
+    background-color: #dc2626;
+}
+
+/* Loader for initial fetching */
+.loader {
+    border: 5px solid #065f46;
+    border-top: 5px solid #a3e635;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 3rem auto;
+}
+
+/* For Webkit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #2c2c2c; /* Color of the tracking area */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555; /* Color of the scroll thumb */
+  border-radius: 10px;
+  border: 3px solid #2c2c2c; /* Creates a padding around the thumb */
+}
+
+/* On hover, make the thumb slightly lighter */
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* For Firefox */
+/* Note: Firefox has limited styling capabilities compared to Webkit */
+/* You can set the color and width, but not the detailed components */
+body {
+  scrollbar-color: #555 #2c2c2c; /* thumb color track color */
+  scrollbar-width: thin;
+}
 
 
-        
-/* Responsive adjustment for smaller screens if needed */
-@media (max-width: 600px) {
-    .form-row {
-        flex-direction: column; /* Stack vertically on small screens */
-        gap: 0; /* Remove gap when stacked */
+@media (max-width: 639px) {
+
+    /*
+    * =========================================
+    * GENERAL & LAYOUT
+    * =========================================
+    */
+    /*
+    * =========================================
+    * GENERAL & LAYOUT
+    * =========================================
+    */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        width: 100%;
+        box-sizing: border-box;
     }
-    .form-row .form-group {
-        margin-bottom: 1rem; /* Add back bottom margin when stacked */
+
+    /*
+    * =========================================
+    * HEADER & MENU BUTTONS FIX
+    * =========================================
+    */
+    .header-content {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .logo {
+        order: 1;
+    }
+
+    .mobile-menu-button {
+        display: block;
+        order: 2;
+        background: transparent;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #047857;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    /*
+    * =========================================
+    * MOBILE DROPDOWN STYLES
+    * =========================================
+    */
+    #mobile-menu-container {
+        display: block;
+        order: 3;
+        background-color: transparent;
+        width: auto; /* Allow container to shrink to content size */
+        margin-left: auto; /* Pushes the container to the right */
+    }
+
+    .auth-dropdown {
+        position: relative; /* This is key! It's the reference point for the dropdown */
+        width: auto; /* Allow auth-dropdown to shrink */
+        text-align: right; /* Align button to the right */
+    }
+
+    .mobile-only {
+        width: auto; /* Remove fixed 100% width from button */
+        box-sizing: border-box;
+        text-align: center;
+        background-color: #059669;
+        color: white;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        margin: 0.5rem 0;
+    }
+
+    /* Style for the dropdown content when it appears */
+    .dropdown-content.mobile-only {
+        display: none;
+        position: absolute; /* This is key! Removes the dropdown from normal document flow */
+        right: 0; /* Positions the dropdown on the far right */
+        top: 100%; /* Places it directly below the button */
+        background-color: #065f46; /* Use a darker color for the dropdown background */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1; /* Ensures it's on top of other content */
+        min-width: 160px; /* Set a fixed minimum width for the dropdown */
+        padding: 0;
+    }
+
+    .dropdown-content.mobile-only.show-dropdown {
+        display: block;
+    }
+
+    .dropdown-content.mobile-only a {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem; /* Reduced padding to make links smaller */
+        background-color: transparent;
+        color: white;
+        text-decoration: none;
+        border-radius: 0; /* Removed border-radius for cleaner look */
+        box-sizing: border-box;
+        margin: 0;
+        text-align: left; /* Align text to the left */
+    }
+
+    .dropdown-content.mobile-only a:hover {
+        background-color: #047857;
+    }
+
+    .separator {
+        display: block;
+        border: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        margin: 0.5rem 0.5rem;
+    }
+    
+
+
+    /*
+    * =========================================
+    * FILTERS BAR ALIGNMENT FIX
+    * =========================================
+    */
+    .filters-bar {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .filter-group,
+    .sort-group {
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    /* This is the key fix for alignment. We make the search box and dropdowns look identical. */
+    .filters-bar select,
+    .filters-bar input[type="text"] {
+        width: 100%;
+        padding: 0.75rem; /* Standardized padding */
+        height: 44px; /* Standardized height */
+        border: 1px solid #047857; /* Standardized border */
+        box-sizing: border-box; /* Crucial for including padding in the width */
+    }
+
+
+    /*
+    * =========================================
+    * LOGIN/REGISTER POP-UP FIX (Working)
+    * =========================================
+    */
+    .modal {
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        width: 90%;
+        max-width: 380px;
+        margin: 5% auto;
+        padding: 1.5rem;
+        box-sizing: border-box;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    #popup-content {
+        width: 90%;
+        max-width: 380px;
+        padding: 1.5rem;
+    }
+
+
+    /*
+    * =========================================
+    * TICKET STYLES (Working)
+    * =========================================
+    */
+    .ticket-summary-header {
+        display: flex;
+        flex-direction: column; /* Stacks the two rows on top of each other */
+    }
+
+    /* Style the top two info items to be on one line */
+    .ticket-summary-header .info-item:nth-child(-n+2) {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    
+    /* Style the bottom two info items to be on the next line */
+    .ticket-summary-header .info-item:nth-child(n+3) {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+
+    .match-bet {
+    white-space: nowrap;
+}
+
+
+
+    /* Make the buttons smaller for mobile */
+    .ticket-actions {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .ticket-actions .btn-resend-ticket,
+    .ticket-actions .btn-delete-ticket {
+        /* Reduce the padding to make the buttons smaller */
+        padding: 5px 10px;
+        /* Reduce the font size for a better fit */
+        font-size: 14px;
+        /* Optionally, make them display side-by-side */
+        display: inline-block;
+        margin: 0 5px; /* Add a little space between buttons */
+    }
+}
+
+/* =========================================
+* TABLET STYLES (@media for screens wider than 640px)
+* ========================================= */
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .filters-bar {
+        /* On tablets, switch to a row layout */
+        flex-direction: row;
+        gap: 0;
+    }
+
+    .football-bets-container .main-odds,
+    .football-bets-container .extra-odds {
+        gap: 1rem;
+    }
+
+    .football-bets-container .extra-odds {
+        margin-top: 1rem;
+    }
+
+    /* Show the auth button on larger screens */
+    .auth-button {
+        display: flex;
+    }
+}
+
+
+
+/* =========================================
+* SMALL DESKTOP STYLES (@media for screens wider than 768px)
+* ========================================= */
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+    
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .main-nav-links {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+    }
+
+    .main-nav-links a {
+        color: #d1d5db;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+    .main-nav-links a:hover {
+        background-color: #047857;
+        color: #ffffff;
+    }
+
+    .promotions-grid {
+        /* On tablets, show two columns */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+
+/* =========================================
+* LARGE DESKTOP STYLES (@media for screens wider than 1024px)
+* ========================================= */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .promotions-grid {
+        /* On large desktops, show three columns */
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+
+/* =========================================
+* EXTRA-LARGE DESKTOP STYLES (@media for screens wider than 1280px)
+* ========================================= */
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
     }
 }

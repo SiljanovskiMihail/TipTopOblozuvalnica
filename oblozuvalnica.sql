@@ -112,13 +112,12 @@ CREATE TABLE `ticket_matches` (
   `match_id` varchar(255) NOT NULL,
   `team1` varchar(255) NOT NULL,
   `team2` varchar(255) NOT NULL,
-  `match_date` date NOT NULL,
   `bet_type` varchar(50) NOT NULL,
   `odd_value` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ticket_id` (`ticket_id`),
   CONSTRAINT `ticket_matches_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +126,7 @@ CREATE TABLE `ticket_matches` (
 
 LOCK TABLES `ticket_matches` WRITE;
 /*!40000 ALTER TABLE `ticket_matches` DISABLE KEYS */;
-INSERT INTO `ticket_matches` VALUES (1,3,'match_match_0002','Vardar','Pelister','2025-08-11','1',4.65),(2,3,'match_match_0008','Germany','France','2025-08-11','1',2.15),(3,4,'match_match_0008','Germany','France','2025-08-12','1',2.15),(4,4,'match_match_0006','Fnatic','G2 Esports','2025-08-12','1',1.80),(5,5,'match_0001','Wolfs','Everton','2025-08-12','1',2.50),(6,5,'match_0002','Vardar','Pelister','2025-08-12','2',1.10),(7,6,'match_0001','Wolfs','Everton','2025-08-12','2',2.80),(8,14,'match_0002','Vardar','Pelister','2025-08-12','2',1.10),(9,15,'match_0001','Wolfs','Everton','2025-08-12','1-1',3.50),(10,15,'match_0002','Vardar','Pelister','2025-08-12','I > II',1.90),(11,15,'match_1000','RFS','Levadia','2025-08-12','3+',1.60),(12,15,'match_0010','NAVI','B8','2025-08-12','>2.5',1.90),(13,16,'match_0002','Vardar','Pelister','2025-08-12','1',4.65),(14,17,'match_0001','Wolfs','Everton','2025-08-12','X',3.40);
+INSERT INTO `ticket_matches` VALUES (17,56,'match_0001','Wolfs','Everton','3+',1.80),(18,56,'match_0002','Vardar','Pelister','2',1.10),(19,56,'match_0008','Germany','France','>60.5',1.85),(20,56,'match_0006','Fnatic','G2 Esports','>2.5',1.60),(21,56,'match_1000','RFS','Levadia','1',1.44),(22,56,'match_1001','Ajax','PSV','3+',1.40),(23,56,'match_0010','NAVI','B8','1',1.25),(40,61,'match_0001','Wolfs','Everton','X',3.40),(41,61,'match_0002','Vardar','Pelister','1',4.65),(48,67,'match_0001','Wolfs','Everton','X',3.40),(49,68,'match_0001','Wolfs','Everton','1-1',3.50),(56,72,'match_0002','Vardar','Pelister','I > II',1.90),(57,72,'match_0008','Germany','France','I > II',1.70),(58,72,'match_0006','Fnatic','G2 Esports','2:0',2.80),(59,72,'match_1000','RFS','Levadia','3+',1.60),(60,73,'match_0001','Wolfs','Everton','X',3.40),(61,73,'match_0002','Vardar','Pelister','X',16.00);
 /*!40000 ALTER TABLE `ticket_matches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +151,7 @@ CREATE TABLE `tickets` (
   UNIQUE KEY `ticket_id` (`ticket_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +160,7 @@ CREATE TABLE `tickets` (
 
 LOCK TABLES `tickets` WRITE;
 /*!40000 ALTER TABLE `tickets` DISABLE KEYS */;
-INSERT INTO `tickets` VALUES (3,'0OUDJWZ2S',15,2,10.00,100.00,999.75,864.79,'2025-08-11 23:57:56'),(4,'175974443',15,2,3.87,500.00,1935.00,1719.75,'2025-08-12 00:25:59'),(5,'818511840',NULL,2,2.75,50.00,137.50,124.38,'2025-08-12 00:29:46'),(6,'633242571',NULL,1,2.80,1000.00,2800.00,2530.00,'2025-08-12 00:37:57'),(7,'949985503',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:02'),(8,'417112217',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:45'),(9,'235604609',NULL,1,16.00,22.00,352.00,302.50,'2025-08-12 12:42:44'),(10,'926686425',NULL,2,33.25,33.00,1097.25,937.61,'2025-08-12 12:46:12'),(14,'037833656',NULL,1,1.10,1000.00,1100.00,1085.00,'2025-08-12 13:04:15'),(15,'685126918',15,4,20.22,50.00,1010.80,866.68,'2025-08-12 13:06:19'),(16,'417557417',15,1,4.65,20.00,93.00,82.05,'2025-08-12 13:38:54'),(17,'823075541',15,1,3.40,10.00,34.00,30.40,'2025-08-12 13:43:13');
+INSERT INTO `tickets` VALUES (4,'175974443',15,2,3.87,500.00,1935.00,1719.75,'2025-08-12 00:25:59'),(5,'818511840',NULL,2,2.75,50.00,137.50,124.38,'2025-08-12 00:29:46'),(6,'633242571',NULL,1,2.80,1000.00,2800.00,2530.00,'2025-08-12 00:37:57'),(7,'949985503',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:02'),(8,'417112217',NULL,1,16.00,20.00,320.00,275.00,'2025-08-12 12:41:45'),(9,'235604609',NULL,1,16.00,22.00,352.00,302.50,'2025-08-12 12:42:44'),(10,'926686425',NULL,2,33.25,33.00,1097.25,937.61,'2025-08-12 12:46:12'),(14,'037833656',NULL,1,1.10,1000.00,1100.00,1085.00,'2025-08-12 13:04:15'),(15,'685126918',15,4,20.22,50.00,1010.80,866.68,'2025-08-12 13:06:19'),(16,'417557417',15,1,4.65,20.00,93.00,82.05,'2025-08-12 13:38:54'),(18,'873650544',NULL,1,1.44,144.00,207.36,197.86,'2025-08-13 01:19:55'),(19,'019185629',NULL,1,4.75,144.00,684.00,603.00,'2025-08-13 01:36:25'),(20,'981637599',NULL,1,5.25,525.00,2756.25,2421.56,'2025-08-13 01:45:05'),(21,'494075174',22,1,1.80,180.00,324.00,302.40,'2025-08-13 01:46:42'),(22,'668727352',15,5,28.63,100.00,2862.84,2448.42,'2025-08-16 14:04:12'),(23,'341512170',15,1,2.50,50.00,125.00,113.75,'2025-08-16 14:16:52'),(24,'199866350',15,1,2.15,100.00,215.00,197.75,'2025-08-16 14:20:58'),(25,'888354399',15,2,4.29,500.00,2145.00,1898.25,'2025-08-16 14:24:10'),(26,'348777130',15,1,1.95,195.00,380.25,352.46,'2025-08-16 14:26:27'),(27,'802185299',15,1,4.65,195.00,906.75,799.99,'2025-08-16 14:28:32'),(28,'447703391',15,1,2.15,22.00,47.30,43.50,'2025-08-16 14:37:51'),(29,'107461492',15,1,1.44,22.00,31.68,30.23,'2025-08-16 14:42:35'),(30,'224447484',15,1,7.00,22.00,154.00,134.20,'2025-08-16 14:50:51'),(31,'432496235',15,1,16.00,16.00,256.00,220.00,'2025-08-16 14:55:24'),(32,'507921339',15,3,20.93,50.00,1046.25,896.81,'2025-08-16 15:00:18'),(33,'742631415',15,3,18.00,100.00,1799.55,1544.62,'2025-08-16 15:03:06'),(34,'777397664',NULL,1,3.40,300.00,1020.00,912.00,'2025-08-16 15:06:57'),(35,'284517652',15,1,7.00,700.00,4900.00,4270.00,'2025-08-16 15:07:12'),(36,'582845268',15,1,4.00,400.00,1600.00,1420.00,'2025-08-16 15:10:12'),(37,'010441239',15,1,3.40,400.00,1360.00,1216.00,'2025-08-16 15:11:42'),(38,'036068158',15,3,5.57,55.00,306.50,268.78,'2025-08-16 15:14:02'),(39,'858976507',15,1,2.50,20.00,50.00,45.50,'2025-08-16 15:17:32'),(40,'544254264',15,1,4.65,100.00,465.00,410.25,'2025-08-16 15:17:44'),(41,'301079536',15,1,2.50,100.00,250.00,227.50,'2025-08-16 15:19:05'),(42,'539456504',15,1,2.50,1000.00,2500.00,2275.00,'2025-08-16 15:22:21'),(43,'473531675',15,1,3.80,380.00,1444.00,1284.40,'2025-08-16 15:24:56'),(44,'023015158',15,1,2.50,22.00,55.00,50.05,'2025-08-16 15:25:09'),(45,'498188111',15,1,8.40,80.00,672.00,583.20,'2025-08-16 15:26:32'),(46,'223440277',15,2,15.00,500.00,7500.00,6450.00,'2025-08-16 15:30:21'),(47,'018192668',15,1,2.50,100.00,250.00,227.50,'2025-08-16 15:31:37'),(48,'146172971',15,1,2.50,50.00,125.00,113.75,'2025-08-16 15:33:28'),(49,'642171361',15,1,2.50,50.00,125.00,113.75,'2025-08-16 15:35:36'),(56,'552376012',15,7,14.77,1000.00,14769.22,12703.83,'2025-08-17 16:35:10'),(61,'935787823',15,2,15.81,50.00,790.50,679.42,'2025-08-17 17:03:53'),(67,'339029442',15,1,3.40,100.00,340.00,304.00,'2025-08-17 20:45:40'),(68,'587742089',15,1,3.50,100.00,350.00,312.50,'2025-08-17 22:24:37'),(72,'595833376',15,4,14.47,22.00,318.35,273.90,'2025-08-20 02:14:26'),(73,'829067356',15,2,54.40,100.00,5440.00,4639.00,'2025-08-20 02:14:43');
 /*!40000 ALTER TABLE `tickets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,6 +197,31 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'oblozuvalnica'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `delete_ticket` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_ticket`(
+    IN `in_ticket_id` INT,
+    IN `in_user_id` INT
+)
+BEGIN
+
+    DELETE FROM `tickets`
+    WHERE `id` = `in_ticket_id` AND `user_id` = `in_user_id`;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `InsertPoraka` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -264,17 +288,30 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTicketMatch`(
-    IN p_ticket_id INT,
+    IN p_ticket_record_id INT,
     IN p_match_id VARCHAR(255),
     IN p_team1 VARCHAR(255),
     IN p_team2 VARCHAR(255),
-    IN p_match_date DATETIME,
-    IN p_bet_type VARCHAR(255),
+    IN p_bet_type VARCHAR(50),
     IN p_odd_value DECIMAL(10, 2)
 )
 BEGIN
-    INSERT INTO ticket_matches (ticket_id, match_id, team1, team2, match_date, bet_type, odd_value)
-    VALUES (p_ticket_id, p_match_id, p_team1, p_team2, p_match_date, p_bet_type, p_odd_value);
+    INSERT INTO ticket_matches (
+        ticket_id,
+        match_id,
+        team1,
+        team2,
+        bet_type,
+        odd_value
+    )
+    VALUES (
+        p_ticket_record_id,
+        p_match_id,
+        p_team1,
+        p_team2,
+        p_bet_type,
+        p_odd_value
+    );
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -445,4 +482,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-12 15:49:46
+-- Dump completed on 2025-08-20  5:04:32
