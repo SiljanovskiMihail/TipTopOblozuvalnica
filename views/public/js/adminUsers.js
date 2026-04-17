@@ -106,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.btn-reject').forEach(button => {
             button.addEventListener('click', (e) => {
                 const userId = e.target.dataset.userId;
-                const username = e.target.dataset.username;
-                openDeleteUserConfirmModal(userId, username);
+                handleRejectUser(userId); // Go directly to deletion
             });
         });
     };
@@ -116,96 +115,104 @@ document.addEventListener('DOMContentLoaded', () => {
      * Handles accepting a user.
      * @param {number} userId - The ID of the user to verify.
      */
-    const handleAcceptUser = async (userId) => {
-        // Find the specific input field for this user ID
-        const adminInput = document.getElementById(`admin-id-input-${userId}`);
-        if (!adminInput) {
-            console.error(`Admin input field not found for user ID: ${userId}`);
-            return;
+const handleAcceptUser = async (userId) => {
+    // 1. Find the input field
+    const adminInput = document.getElementById(`admin-id-input-${userId}`);
+    if (!adminInput) return;
+
+    const adminInputId = adminInput.value.trim();
+
+    // 2. Prepare the Modal elements
+    const modalTitle = document.querySelector('#delete-user-modal h2');
+    const confirmContent = document.getElementById('delete-user-confirm-content');
+
+    // --- FIX: Trigger popup if ID is missing ---
+    if (!adminInputId) {
+        if (confirmContent) confirmContent.style.display = 'none'; // Hide the "Are you sure" buttons
+        if (modalTitle) modalTitle.textContent = "Потребен е матичен број";
+        
+        showMessage(deleteUserConfirmMessage, 'Ве молиме внесете матичен број од сликата за да го прифатите корисникот.', false);
+        openModal(deleteUserModal);
+        return; // Stop here
+    }
+
+    try {
+        const response = await fetch(`/api/users/${userId}/verify`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminInputId })
+        });
+        
+        const data = await response.json();
+
+        // Prepare modal for result
+        if (confirmContent) confirmContent.style.display = 'none';
+
+        if (!response.ok) {
+            // Handle Wrong ID or Server Error in Popup
+            if (modalTitle) modalTitle.textContent = "Грешка при верификација";
+            showMessage(deleteUserConfirmMessage, data.error || 'Невалиден матичен број', false);
+            openModal(deleteUserModal);
+        } else {
+            // Handle Success in Popup
+            if (modalTitle) modalTitle.textContent = "Успешна верификација";
+            showMessage(deleteUserConfirmMessage, data.message, true);
+            openModal(deleteUserModal);
+            
+            // Refresh the list behind the modal
+            fetchAndRenderUnverifiedUsers();
         }
 
-        const adminInputId = adminInput.value.trim();
-        if (!adminInputId) {
-            showMessage(unverifiedUsersMessage, 'Ве молиме внесете ID од сликата за да го прифатите корисникот.', false);
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/users/${userId}/verify`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ adminInputId })
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error);
-            showMessage(unverifiedUsersMessage, data.message, true);
-            fetchAndRenderUnverifiedUsers(); // Refresh list
-        } catch (error) {
-            console.error('Error accepting user:', error);
-            showMessage(unverifiedUsersMessage, `Грешка при прифаќање: ${error.message}`, false);
-        }
-    };
-
+    } catch (error) {
+        console.error('Error:', error);
+        if (confirmContent) confirmContent.style.display = 'none';
+        if (modalTitle) modalTitle.textContent = "Системска Грешка";
+        showMessage(deleteUserConfirmMessage, "Проблем со мрежата или серверот.", false);
+        openModal(deleteUserModal);
+    }
+};
     /**
      * Handles rejecting (deleting) a user.
      * @param {number} userId - The ID of the user to delete.
      */
-    const handleRejectUser = async (userId) => {
-        try {
-            const response = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error);
-            const userCardToRemove = document.querySelector(`.user-card[data-user-id="${userId}"]`);
-            if (userCardToRemove) {
-                userCardToRemove.remove();
-                console.log(`[UI] User card for ID ${userId} removed successfully.`);
-            }
-            showMessage(deleteUserConfirmMessage, data.message, true); // Show message in modal
+const handleRejectUser = async (userId) => {
+    try {
+        const response = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error);
 
-        } catch (error) {
-            console.error('Error rejecting user:', error);
-            showMessage(deleteUserConfirmMessage, `Грешка при одбивање: ${error.message}`, false);
+        // 1. Remove the user card from UI
+        const userCardToRemove = document.querySelector(`.user-card[data-user-id="${userId}"]`);
+        if (userCardToRemove) {
+            userCardToRemove.remove();
         }
-    };
 
-    // --- Delete Confirmation Modal Logic ---
-
-    const openDeleteUserConfirmModal = (userId, username) => {
-        if (deleteUserInfo) {
-            deleteUserInfo.textContent = username; // Display username in confirmation text
-        }
-        if (deleteUserIdHidden) {
-            deleteUserIdHidden.value = userId; // Store user ID in hidden input
-        }
-        showMessage(deleteUserConfirmMessage, '', true); // Clear any previous messages
+        // 2. Prepare the modal to show ONLY the success message
+        document.getElementById('delete-user-confirm-content').style.display = 'none'; // Hide "Are you sure?"
+        document.getElementById('delete-user-modal-close-btn').style.display = 'block'; // Ensure close button is there
+        
+        // 3. Show success message and open modal
+        showMessage(deleteUserConfirmMessage, data.message, true); 
         openModal(deleteUserModal);
-    };
 
-    // Event listeners for delete modal buttons
-    if (deleteUserModalCloseBtn) {
-        deleteUserModalCloseBtn.addEventListener('click', () => closeModal(deleteUserModal));
+    } catch (error) {
+        console.error('Error rejecting user:', error);
+        // If there's an error, you might want to show it on the main page message instead
+        showMessage(unverifiedUsersMessage, `Грешка при одбивање: ${error.message}`, false);
     }
+};
 
-    if (cancelDeleteUserBtn) {
-        cancelDeleteUserBtn.addEventListener('click', () => closeModal(deleteUserModal));
-    }
 
-    if (confirmDeleteUserBtn) {
-        confirmDeleteUserBtn.addEventListener('click', () => {
-            const userIdToDelete = deleteUserIdHidden.value;
-            if (userIdToDelete) {
-                handleRejectUser(userIdToDelete);
-            }
-        });
-    }
 
     // Close modal if clicking outside content
     window.addEventListener('click', (event) => {
         if (event.target === deleteUserModal) {
             closeModal(deleteUserModal);
         }
+            if (deleteUserModalCloseBtn) {
+        deleteUserModalCloseBtn.addEventListener('click', () => closeModal(deleteUserModal));
+    }
     });
 
     // --- Initial Load ---
