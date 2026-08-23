@@ -1,33 +1,41 @@
-const registerForm = document.getElementById('register-form');
+export function initializeRegister() {
+    const registerForm = document.getElementById('register-form');
+    if (!registerForm) return;
 
-registerForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+    registerForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    // FormData will now include the file
-    const formData = new FormData(registerForm);
-    const messageArea = document.getElementById('message-area');
+        const formData = new FormData(registerForm);
+        const messageArea = document.getElementById('message-area');
 
-    try {
-        const response = await fetch('/register', {
-            method: 'POST',
-            // DO NOT set Content-Type header manually.
-            // The browser will set it to 'multipart/form-data' automatically.
-            body: formData 
-        });
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: formData 
+            });
 
-        const result = await response.json();
+            const result = await response.json();
 
-        if (response.ok) {
-            messageArea.textContent = result.message;
-            messageArea.style.color = 'green';
-            registerForm.reset();
-        } else {
-            messageArea.textContent = result.message;
+            if (response.ok) {
+                messageArea.textContent = result.message;
+                messageArea.style.color = 'green';
+                registerForm.reset(); 
+    registerForm.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+            } else {
+                messageArea.textContent = result.message;
+                messageArea.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            messageArea.textContent = 'Грешка во мрежата. Обидете се повторно.';
             messageArea.style.color = 'red';
         }
-    } catch (error) {
-        console.error('Fetch Error:', error);
-        messageArea.textContent = 'Грешка во мрежата. Обидете се повторно.';
-        messageArea.style.color = 'red';
-    }
-});
+    });
+}
+
+window.initializeRegister = initializeRegister;
+if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    initializeRegister();
+}

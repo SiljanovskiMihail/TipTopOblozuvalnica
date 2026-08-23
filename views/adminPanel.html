@@ -19,11 +19,9 @@
             <p>Управување со утакмици и коефициенти.</p>
         </div>
 
-        <!-- ADD MATCH SECTION -->
         <section class="admin-section" id="add-match-section">
             <h2>Додај Нова Утакмица</h2>
             <form id="add-match-form" class="admin-form">
-                <!-- Row 1: ID, Sport, Time -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="new-match-id">ID на Утакмица:</label>
@@ -44,7 +42,6 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Teams -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="new-team1">Тим 1:</label>
@@ -56,7 +53,6 @@
                     </div>
                 </div>
 
-                <!-- Odds Section -->
                 <div class="odds-section">
                     <h3>Главни Коефициенти</h3>
                     <div class="main-odds-grid">
@@ -76,7 +72,6 @@
 
                     <h3>Дополнителни Коефициенти (макс. 6)</h3>
                     <div id="new-extra-odds-container" class="extra-odds-container">
-                        <!-- Extra odds will be dynamically added here -->
                     </div>
                     <button type="button" id="add-extra-odd-btn" class="btn-secondary">Додај Дополнителен Коефициент</button>
                 </div>
@@ -86,7 +81,6 @@
             </form>
         </section>
 
-        <!-- MANAGE MATCHES SECTION -->
         <section class="admin-section" id="manage-matches-section">
             <h2>Управување со Постоечки Утакмици</h2>
             <div class="admin-controls">
@@ -98,7 +92,6 @@
         </section>
     </main>
 
-    <!-- EDIT MODAL -->
 <div id="edit-match-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -155,7 +148,7 @@
 <div id="delete-confirm-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn" id="delete-modal-close-btn">&times;</span>
-        <h2>Потврди Бришење</h2>
+        <h2>Успешно Бришење</h2>
         <div id="delete-confirm-content">
             <p>Дали сте сигурни дека сакате да ја избришете утакмицата <strong id="delete-match-info"></strong>?</p>
             <div class="delete-confirm-actions">
@@ -169,7 +162,7 @@
 </div>
 
 
-    <script src="views/public/js/admin.js"></script>
+        <script type="module" src="views/public/js/admin.js"></script>
     <script type="module" src="views/public/js/scripts.js"></script>
 </body>
 </html>

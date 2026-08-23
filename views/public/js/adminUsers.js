@@ -1,57 +1,58 @@
-// views/public/js/adminUsers.js
+export const getPhotoSrc = (path) => {
+    return path ? `/uploads/ids/${path}` : 'https://placehold.co/200x150/065f46/ffffff?text=No+Photo';
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Global Selectors ---
+export const createUserCardHTML = (user) => {
+    const photoSrc = getPhotoSrc(user.id_photo_path);
+    return `
+        <div class="user-photo-container">
+            <img src="${photoSrc}" alt="ID Photo for ${user.username}" class="user-photo" onerror="this.onerror=null;this.src='https://placehold.co/200x150/065f46/ffffff?text=No+Photo';">
+        </div>
+        <div class="user-info">
+            <p>Корисничко име: <strong>${user.username}</strong></p>
+            <div class="admin-id-check-container">
+                <label for="admin-id-input-${user.id}">Внеси Матичен на корисник:</label>
+                <input type="text" id="admin-id-input-${user.id}" class="admin-id-input" placeholder="Верификација..." required>
+            </div>
+        </div>
+        <div class="user-actions">
+            <button class="btn-accept" data-user-id="${user.id}">Прифати</button>
+            <button class="btn-reject" data-user-id="${user.id}">Одбиј</button>
+        </div>
+    `;
+};
+
+const initializeAdminUsers = () => {
     const unverifiedUsersList = document.getElementById('unverified-users-list');
     const unverifiedUsersMessage = document.getElementById('unverified-users-message');
-
-    // Delete User Modal Selectors
-    const deleteUserModal = document.getElementById('delete-user-modal');
-    const deleteUserModalCloseBtn = document.getElementById('delete-user-modal-close-btn');
-    const deleteUserInfo = document.getElementById('delete-user-info');
-    const confirmDeleteUserBtn = document.getElementById('confirm-delete-user-btn');
-    const cancelDeleteUserBtn = document.getElementById('cancel-delete-user-btn');
-    const deleteUserConfirmMessage = document.getElementById('delete-user-confirm-message');
-    const deleteUserIdHidden = document.getElementById('delete-user-id-hidden');
-
-    // --- Utility Functions ---
+    const modal = document.getElementById('delete-user-modal');
+    const modalTitle = modal?.querySelector('h2');
+    const modalCloseBtn = document.getElementById('delete-user-modal-close-btn');
+    const modalConfirmContent = document.getElementById('delete-user-confirm-content');
+    const modalMessage = document.getElementById('delete-user-confirm-message');
     const showMessage = (element, message, isSuccess) => {
+        if (!element) return;
         element.textContent = message;
-        element.className = 'form-message'; // Reset classes
-        element.classList.add(isSuccess ? 'success' : 'error');
+        element.className = `form-message ${isSuccess ? 'success' : 'error'}`;
     };
-
-    const openModal = (modalElement) => {
-        if (modalElement) {
-            modalElement.classList.add('modal-visible');
-            document.body.style.overflow = 'hidden'; // Disable body scroll
-        }
+    const openModal = (title) => {
+        if (modalTitle) modalTitle.textContent = title;
+        if (modalConfirmContent) modalConfirmContent.style.display = 'none'; 
+        modal.classList.add('modal-visible');
+        document.body.style.overflow = 'hidden';
     };
-
-    const closeModal = (modalElement) => {
-        if (modalElement) {
-            modalElement.classList.remove('modal-visible');
-            document.body.style.overflow = ''; // Re-enable body scroll
-            // Clear any messages in the modal
-            if (deleteUserConfirmMessage) {
-                showMessage(deleteUserConfirmMessage, '', true);
-            }
-        }
+    const closeModal = () => {
+        modal.classList.remove('modal-visible');
+        document.body.style.overflow = '';
+        if (modalMessage) modalMessage.textContent = '';
     };
-
-    // --- API Calls and Rendering ---
-
-    /**
-     * Fetches unverified users from the API and renders them.
-     */
     const fetchAndRenderUnverifiedUsers = async () => {
         try {
             const response = await fetch('/api/unverified-users');
-            if (!response.ok) throw new Error((await response.json()).error || 'Failed to fetch unverified users');
             const users = await response.json();
-
-            unverifiedUsersList.innerHTML = ''; // Clear existing list
-            showMessage(unverifiedUsersMessage, '', true); // Clear previous messages
+            
+            if (!unverifiedUsersList) return;
+            unverifiedUsersList.innerHTML = '';
 
             if (users.length === 0) {
                 unverifiedUsersList.innerHTML = '<p>Нема нови корисници за верификација.</p>';
@@ -59,162 +60,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             users.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
-                userCard.dataset.userId = user.id; // Store the primary key ID
-
-                // Corrected photoSrc to handle the path stored in the database
-                const photoSrc = user.id_photo_path ? `/uploads/ids/${user.id_photo_path}` : 'https://placehold.co/200x150/065f46/ffffff?text=No+Photo';
-
-                userCard.innerHTML = `
-                    <div class="user-photo-container">
-                        <img src="${photoSrc}" alt="ID Photo for ${user.username}" class="user-photo" onerror="this.onerror=null;this.src='https://placehold.co/200x150/065f46/ffffff?text=No+Photo';">
-                    </div>
-                    <div class="user-info">
-                        <p>Корисничко име: <strong>${user.username}</strong></p>
-                        <div class="admin-id-check-container">
-                            <label for="admin-id-input-${user.id}">Внеси Матичен на корисник:</label>
-                            <input type="text" id="admin-id-input-${user.id}" class="admin-id-input" placeholder="Верификација..." required>
-                        </div>
-                    </div>
-                    <div class="user-actions">
-                        <button class="btn-accept" data-user-id="${user.id}">Прифати</button>
-                        <button class="btn-reject" data-user-id="${user.id}" data-username="${user.username}">Одбиј</button>
-                    </div>
-                `;
-                unverifiedUsersList.appendChild(userCard);
+                const card = document.createElement('div');
+                card.className = 'user-card';
+                card.dataset.userId = user.id;
+                card.innerHTML = createUserCardHTML(user);
+                unverifiedUsersList.appendChild(card);
             });
-
-            addEventListenersToUserButtons();
+            addEventListeners();
         } catch (error) {
-            console.error('Error fetching unverified users:', error);
-            showMessage(unverifiedUsersMessage, `Грешка при вчитување на корисници: ${error.message}`, false);
+            showMessage(unverifiedUsersMessage, 'Грешка при вчитување.', false);
         }
     };
 
-    /**
-     * Adds event listeners to the Accept and Reject buttons.
-     */
-    const addEventListenersToUserButtons = () => {
-        document.querySelectorAll('.btn-accept').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const userId = e.target.dataset.userId;
-                handleAcceptUser(userId);
+    const handleAcceptUser = async (userId) => {
+        const input = document.getElementById(`admin-id-input-${userId}`);
+        const adminInputId = input?.value.trim();
+
+        if (!adminInputId) {
+            openModal("Внимавајте");
+            showMessage(modalMessage, 'Ве молиме внесете матичен број за верификација.', false);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/users/${userId}/verify`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminInputId })
             });
-        });
+            const data = await response.json();
 
-        document.querySelectorAll('.btn-reject').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const userId = e.target.dataset.userId;
-                handleRejectUser(userId); // Go directly to deletion
-            });
-        });
-    };
-
-    /**
-     * Handles accepting a user.
-     * @param {number} userId - The ID of the user to verify.
-     */
-const handleAcceptUser = async (userId) => {
-    // 1. Find the input field
-    const adminInput = document.getElementById(`admin-id-input-${userId}`);
-    if (!adminInput) return;
-
-    const adminInputId = adminInput.value.trim();
-
-    // 2. Prepare the Modal elements
-    const modalTitle = document.querySelector('#delete-user-modal h2');
-    const confirmContent = document.getElementById('delete-user-confirm-content');
-
-    // --- FIX: Trigger popup if ID is missing ---
-    if (!adminInputId) {
-        if (confirmContent) confirmContent.style.display = 'none'; // Hide the "Are you sure" buttons
-        if (modalTitle) modalTitle.textContent = "Потребен е матичен број";
-        
-        showMessage(deleteUserConfirmMessage, 'Ве молиме внесете матичен број од сликата за да го прифатите корисникот.', false);
-        openModal(deleteUserModal);
-        return; // Stop here
-    }
-
-    try {
-        const response = await fetch(`/api/users/${userId}/verify`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminInputId })
-        });
-        
-        const data = await response.json();
-
-        // Prepare modal for result
-        if (confirmContent) confirmContent.style.display = 'none';
-
-        if (!response.ok) {
-            // Handle Wrong ID or Server Error in Popup
-            if (modalTitle) modalTitle.textContent = "Грешка при верификација";
-            showMessage(deleteUserConfirmMessage, data.error || 'Невалиден матичен број', false);
-            openModal(deleteUserModal);
-        } else {
-            // Handle Success in Popup
-            if (modalTitle) modalTitle.textContent = "Успешна верификација";
-            showMessage(deleteUserConfirmMessage, data.message, true);
-            openModal(deleteUserModal);
+            openModal(response.ok ? "Успешно" : "Грешка");
+            showMessage(modalMessage, data.message || data.error, response.ok);
             
-            // Refresh the list behind the modal
-            fetchAndRenderUnverifiedUsers();
+            if (response.ok) fetchAndRenderUnverifiedUsers();
+        } catch (error) {
+            openModal("Системска грешка");
+            showMessage(modalMessage, "Проблем со серверот.", false);
         }
+    };
 
-    } catch (error) {
-        console.error('Error:', error);
-        if (confirmContent) confirmContent.style.display = 'none';
-        if (modalTitle) modalTitle.textContent = "Системска Грешка";
-        showMessage(deleteUserConfirmMessage, "Проблем со мрежата или серверот.", false);
-        openModal(deleteUserModal);
-    }
-};
-    /**
-     * Handles rejecting (deleting) a user.
-     * @param {number} userId - The ID of the user to delete.
-     */
-const handleRejectUser = async (userId) => {
-    try {
-        const response = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
-        const data = await response.json();
-        
-        if (!response.ok) throw new Error(data.error);
+    const handleRejectUser = async (userId) => {
+        try {
+            const response = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+            const data = await response.json();
 
-        // 1. Remove the user card from UI
-        const userCardToRemove = document.querySelector(`.user-card[data-user-id="${userId}"]`);
-        if (userCardToRemove) {
-            userCardToRemove.remove();
+            openModal("Бришење Корисник");
+            showMessage(modalMessage, data.message || data.error, response.ok);
+
+            if (response.ok) {
+                document.querySelector(`.user-card[data-user-id="${userId}"]`)?.remove();
+            }
+        } catch (error) {
+            openModal("Грешка при бришење");
+            showMessage(modalMessage, data.error || "Неуспешно бришење", false);
         }
+    };
 
-        // 2. Prepare the modal to show ONLY the success message
-        document.getElementById('delete-user-confirm-content').style.display = 'none'; // Hide "Are you sure?"
-        document.getElementById('delete-user-modal-close-btn').style.display = 'block'; // Ensure close button is there
-        
-        // 3. Show success message and open modal
-        showMessage(deleteUserConfirmMessage, data.message, true); 
-        openModal(deleteUserModal);
+    const addEventListeners = () => {
+        unverifiedUsersList.onclick = (e) => {
+            const userId = e.target.dataset.userId;
+            if (e.target.classList.contains('btn-accept')) handleAcceptUser(userId);
+            if (e.target.classList.contains('btn-reject')) handleRejectUser(userId);
+        };
+    };
 
-    } catch (error) {
-        console.error('Error rejecting user:', error);
-        // If there's an error, you might want to show it on the main page message instead
-        showMessage(unverifiedUsersMessage, `Грешка при одбивање: ${error.message}`, false);
-    }
-};
+    modalCloseBtn?.addEventListener('click', closeModal);
+    window.onclick = (e) => { if (e.target === modal) closeModal(); };
 
-
-
-    // Close modal if clicking outside content
-    window.addEventListener('click', (event) => {
-        if (event.target === deleteUserModal) {
-            closeModal(deleteUserModal);
-        }
-            if (deleteUserModalCloseBtn) {
-        deleteUserModalCloseBtn.addEventListener('click', () => closeModal(deleteUserModal));
-    }
-    });
-
-    // --- Initial Load ---
     fetchAndRenderUnverifiedUsers();
-});
+};
+
+if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    document.addEventListener('DOMContentLoaded', initializeAdminUsers);
+}

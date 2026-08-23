@@ -1,5 +1,21 @@
+window.updateUIForLoggedInUser = (username) => {
+    const accountButton = document.getElementById('account-button');
+    const dropdownContent = document.getElementById('dropdown-content');
+
+    if (accountButton) accountButton.textContent = username;
+
+    const loggedInHtml = (username === 'ADMIN') ?
+        `<a href="/admin">Утакмици</a><a href="/users">Корисници</a><a href="#" id="logout-btn">Одјава</a>` :
+        `<a href="/my-tickets">Мои тикети</a><a href="#" id="logout-btn">Одјава</a>`;
+
+    if (dropdownContent) {
+        dropdownContent.innerHTML = loggedInHtml;
+    }
+};
+
+export const initApp = async () => {
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- 1. Function to load external HTML content into a placeholder ---
     async function loadComponent(placeholderId, filePath) {
         try {
             const response = await fetch(filePath);
@@ -19,30 +35,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Load the header component first. Execution will pause here until it's done.
     await loadComponent('header-placeholder', '../views/header.html');
-
-    // --- 2. Element Selectors ---
     const accountButton = document.getElementById('account-button');
     const dropdownContent = document.getElementById('dropdown-content');
-
     const loginModal = document.getElementById('login-modal');
     const registerModal = document.getElementById('register-modal');
     const messageLogin = document.getElementById('message-login');
     const loginForm = document.getElementById('login-form');
-
     const closeButtons = document.querySelectorAll('.modal .close-btn');
-
     const showRegisterLink = document.getElementById('show-register');
     const showLoginLink = document.getElementById('show-login');
-
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mobileDropdownContent = document.getElementById('mobile-dropdown-content');
-
-    // --- 3. Event Delegation (The Fix) ---
     const handleDropdownClick = (event) => {
         const targetLink = event.target.closest('a');
-        if (!targetLink) return; // Exit if the click wasn't on a link
+        if (!targetLink) return; 
 
         const action = targetLink.getAttribute('id');
         if (action === 'login-btn') {
@@ -64,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         mobileDropdownContent.addEventListener('click', handleDropdownClick);
     }
 
-    // --- 4. Modal Display Functions ---
     const openModal = (modal) => {
         if (modal) {
             if (modal === loginModal && registerModal) registerModal.style.display = 'none';
@@ -91,7 +97,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (registerModal) registerModal.style.display = 'none';
     };
 
-    // --- 5. UI Update Functions for BOTH Menus ---
     window.updateUIForLoggedInUser = (username) => {
         if (accountButton) accountButton.textContent = username;
         if (mobileMenuToggle) mobileMenuToggle.textContent = username;
@@ -123,7 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // --- 6. Session & Authentication Handlers ---
     const checkSession = async () => {
         try {
             const response = await fetch('/session-status');
@@ -158,10 +162,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Initial check for session status to set up the UI correctly
     checkSession();
 
-    // Dropdown Toggle for "Анонимен" / username button
     if (accountButton && dropdownContent) {
         accountButton.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -175,7 +177,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Mobile Menu Toggle
     if (mobileMenuToggle && mobileDropdownContent) {
         mobileMenuToggle.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -183,7 +184,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Login Form Submission
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -216,26 +216,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Event listeners to close modals using the 'x' buttons
     closeButtons.forEach(button => {
         button.addEventListener('click', closeModal);
     });
 
-    // Close modal when clicking outside the content area of the modal itself
     window.addEventListener('click', (event) => {
         if (event.target === loginModal || event.target === registerModal) {
             closeModal();
         }
     });
 
-    // Close modal with the Escape key
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             closeModal();
         }
     });
 
-    // Event listeners to switch between forms (Login/Register links inside modals)
     if (showRegisterLink) {
         showRegisterLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -250,7 +246,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- 7. Script Loading and Initialization ---
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -263,20 +258,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         await Promise.all([
-            loadScript('/views/public/js/register.js'),
-            loadScript('/views/public/js/filter.js'),
-            loadScript('/views/public/js/matches.js'),
-            loadScript('/views/public/js/bettingslip.js')
+            import('/views/public/js/register.js'),
+            import('/views/public/js/filter.js'),
+            import('/views/public/js/matches.js'),
+            import('/views/public/js/bettingslip.js')
         ]);
 
         console.log("All scripts loaded successfully.");
 
         const matchList = document.getElementById('match-list');
 
-        if (matchList) {
-            initializeFilters(matchList);
-            initializeBettingSlip(matchList);
-        } else {
+if (matchList) {
+        if (typeof window.initializeFilters === 'function') {
+            window.initializeFilters(matchList);
+        }
+        if (typeof window.initializeBettingSlip === 'function') {
+            window.initializeBettingSlip(matchList);
+        }
+    }
+        else {
             console.error("#match-list element not found after script loading.");
         }
 
@@ -284,3 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Failed to load a required script:", error);
     }
 });
+};
+if (typeof window !== 'undefined') {
+    initApp().catch(console.error); 
+}

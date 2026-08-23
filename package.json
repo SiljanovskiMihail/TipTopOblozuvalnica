@@ -18,6 +18,8 @@
     "mysql2": "^3.14.1"
   },
   "devDependencies": {
-    "happy-dom": "^20.9.0"
+    "@happy-dom/global-registrator": "^20.9.0",
+    "happy-dom": "^20.9.0",
+    "supertest": "^7.2.2"
   }
 }

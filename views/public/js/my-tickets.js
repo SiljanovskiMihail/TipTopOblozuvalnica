@@ -1,13 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-    const ticketsContainer = document.getElementById('my-tickets-container');
-    if (!ticketsContainer) return;
-
-    // --- Custom Pop-up Function (copied from bettingslip.js for standalone use) ---
-const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
-    // Find if a popup already exists and remove it
+export const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
     const existingPopup = document.querySelector('.ticket-popup');
-    if(existingPopup) existingPopup.remove();
+    if (existingPopup) existingPopup.remove();
 
     const popup = document.createElement('div');
     popup.className = 'ticket-popup';
@@ -29,11 +22,8 @@ const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
             popup.remove();
             resolve(value);
         };
-        // Use the correct class name based on the state
         const confirmBtn = popup.querySelector('.popup-yes-btn') || popup.querySelector('.popup-ok-btn');
-        if (confirmBtn) {
-            confirmBtn.onclick = () => close(true);
-        }
+        if (confirmBtn) confirmBtn.onclick = () => close(true);
 
         popup.querySelector('.popup-close-btn').onclick = () => close(false);
         if (isConfirm) {
@@ -45,23 +35,9 @@ const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
     });
 };
 
-    const fetchAndRenderTickets = async () => {
-        try {
-            const response = await fetch('/api/my-tickets');
-            if (response.status === 401) {
-                ticketsContainer.innerHTML = '<p class="no-tickets-message">Треба да се најавите за да ги видите вашите тикети.</p>';
-                return;
-            }
-            if (!response.ok) throw new Error('Failed to fetch tickets.');
-            
-            const tickets = await response.json();
-            renderTickets(tickets);
-
-        } catch (error) {
-            console.error(error);
-            ticketsContainer.innerHTML = '<p class="no-tickets-message">Грешка при вчитување на тикетите.</p>';
-        }
-    };
+export async function initializeMyTickets() {
+    const ticketsContainer = document.getElementById('my-tickets-container');
+    if (!ticketsContainer) return;
 
     const renderTickets = (tickets) => {
         if (tickets.length === 0) {
@@ -69,34 +45,29 @@ const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
             return;
         }
 
-        ticketsContainer.innerHTML = ''; // Clear loader
+        ticketsContainer.innerHTML = ''; 
         tickets.forEach(ticket => {
             const ticketCard = document.createElement('div');
             ticketCard.className = 'ticket-card';
-            // Store data directly on the element for easy access
             ticketCard.dataset.ticketId = ticket.id;
             ticketCard.dataset.matches = JSON.stringify(ticket.matches);
 
-            const createdAt = new Date(ticket.created_at).toLocaleString('mk-MK');
-
             ticketCard.innerHTML = `
                 <div class="ticket-summary-header">
-                    <div class="info-item">ID на тикет<span>${ticket.ticket_id}</span></div>
+                    <div class="info-item">Број на тикет<span>${ticket.ticket_id}</span></div>
                     <div class="info-item">Уплата<span>${ticket.stake} ден.</span></div>
-                    <div class="info-item">Вкупен коефициент<span>${ticket.total_odds}</span></div>
-                    <div class="info-item">Можна добивка<span>${ticket.payout_after_tax} ден.</span></div>
+                    <div class="info-item">Коефициент<span>${ticket.total_odds}</span></div>
+                    <div class="info-item">Добивка<span>${ticket.payout_after_tax} ден.</span></div>
                 </div>
                 <div class="ticket-details">
-                    ${ticket.matches.map(match => {
-                        return `
-                            <div class="match-item">
-                                <span class="match-id">${match.match_id.replace('match_', '')}</span>
-                                <span class="match-teams">${match.team1} vs ${match.team2}</span>
-                                <span class="match-bet">${match.bet_type}</span>
-                                <span class="match-odd">${match.odd_value}</span>
-                            </div>
-                        `;
-                    }).join('')}
+                    ${ticket.matches.map(match => `
+                        <div class="match-item">
+                            <span class="match-id">${match.match_id.replace('match_', '')}</span>
+                            <span class="match-teams">${match.team1} vs ${match.team2}</span>
+                            <span class="match-bet">${match.bet_type}</span>
+                            <span class="match-odd">${match.odd_value}</span>
+                        </div>
+                    `).join('')}
                 </div>
                 <div class="ticket-actions">
                     <button class="btn-resend-ticket">Препушти</button>
@@ -107,50 +78,53 @@ const showTicketPopup = (message, title = 'Info', isConfirm = false) => {
         });
     };
 
-    // --- Event Delegation for Clicks ---
     ticketsContainer.addEventListener('click', async (e) => {
         const ticketCard = e.target.closest('.ticket-card');
         if (!ticketCard) return;
 
         const ticketId = ticketCard.dataset.ticketId;
 
-        // 1. Handle Header Click to Expand/Collapse
         if (e.target.closest('.ticket-summary-header')) {
             ticketCard.classList.toggle('expanded');
         }
 
-        // 2. Handle Delete Button Click
         if (e.target.classList.contains('btn-delete-ticket')) {
-            const confirmed = await showTicketPopup('Дали сте сигурни дека сакате да го избришете тикетот?', 'Потврда', true);
+            const confirmed = await showTicketPopup('Избриши тикет?', 'Потврда', true);
             if (confirmed) {
                 try {
-                    const response = await fetch(`/api/tickets/${ticketId}`, { method: 'DELETE' });
-                    const result = await response.json();
-                    if (response.ok) {
-                        showTicketPopup('Тикетот е успешно избришан.', 'Успех');
-                        ticketCard.remove(); // Remove from view
+                    const res = await fetch(`/api/tickets/${ticketId}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        ticketCard.remove();
                         if (ticketsContainer.children.length === 0) {
                             ticketsContainer.innerHTML = '<p class="no-tickets-message">Немате креирано тикети.</p>';
                         }
-                    } else {
-                        throw new Error(result.message);
                     }
-                } catch (error) {
-                    showTicketPopup(`Грешка: ${error.message}`, 'Грешка');
+                } catch (err) {
+                    console.error("Delete failed", err);
                 }
             }
         }
-        
-        // 3. Handle Resend Button Click
+
         if (e.target.classList.contains('btn-resend-ticket')) {
-            const matchesJSON = ticketCard.dataset.matches;
-            // Store the match data in sessionStorage to be read by the betting slip on the main page
-            sessionStorage.setItem('resendTicketData', matchesJSON);
-            // Redirect to the main page where the betting slip is
+            sessionStorage.setItem('resendTicketData', ticketCard.dataset.matches);
             window.location.href = '/'; 
         }
     });
 
-    // Initial load
-    fetchAndRenderTickets();
-});
+    try {
+        const response = await fetch('/api/my-tickets');
+        if (response.status === 401) {
+            ticketsContainer.innerHTML = '<p>Најавете се.</p>';
+            return;
+        }
+        const tickets = await response.json();
+        renderTickets(tickets);
+    } catch (error) {
+        ticketsContainer.innerHTML = '<p>Грешка.</p>';
+    }
+}
+
+window.initializeMyTickets = initializeMyTickets;
+if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    initializeMyTickets();
+}

@@ -1,18 +1,21 @@
-// views/public/js/admin.js
+export const formatDateTimeLocal = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '';
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+};
+
+export const setupAdmin = () => {
+    if (!document.getElementById('admin-match-list')) return;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Global Selectors ---
     const addMatchForm = document.getElementById('add-match-form');
     const addMatchMessage = document.getElementById('add-match-message');
     const adminMatchList = document.getElementById('admin-match-list');
     const adminSearchInput = document.getElementById('admin-search-input');
-
-    // Add Form Specific
     const newMatchIdInput = document.getElementById('new-match-id');
     const newExtraOddsContainer = document.getElementById('new-extra-odds-container');
     const addExtraOddBtn = document.getElementById('add-extra-odd-btn');
-
-    // Edit Modal Specific
     const editMatchModal = document.getElementById('edit-match-modal');
     const editMatchForm = document.getElementById('edit-match-form');
     const editMatchIdDisplay = document.getElementById('edit-match-id-display');
@@ -23,13 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editMatchTimeInput = document.getElementById('edit-match-time');
     const editMatchMessage = document.getElementById('edit-match-message');
     const modalCloseBtn = editMatchModal.querySelector('.close-btn');
-    
-    // Selectors for Edit Modal Odds
     const editMainOddsContainer = document.getElementById('edit-main-odds-container');
     const editExtraOddsContainer = document.getElementById('edit-extra-odds-container');
     const addEditOddFieldBtn = document.getElementById('add-edit-odd-field-btn');
-
-    // --- NEW: Selectors for Delete Confirmation Modal ---
     const deleteConfirmModal = document.getElementById('delete-confirm-modal');
     const deleteMatchInfo = document.getElementById('delete-match-info');
     const deleteConfirmMessage = document.getElementById('delete-confirm-message');
@@ -37,30 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
     const deleteMatchIdHidden = document.getElementById('delete-match-id-hidden');
     const deleteModalCloseBtn = document.getElementById('delete-modal-close-btn');
-    const deleteConfirmContent = document.getElementById('delete-confirm-content'); // For hiding buttons
-
+    const deleteConfirmContent = document.getElementById('delete-confirm-content'); 
     const MAX_EXTRA_ODDS = 6;
 
-    // --- State for all fetched matches ---
     let allMatches = [];
-
-    // --- Utility Functions ---
-    const formatDateTimeLocal = (isoString) => {
-        if (!isoString) return '';
-        const date = new Date(isoString);
-        if (isNaN(date.getTime())) return '';
-        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-    };
 
     const showMessage = (element, message, isSuccess) => {
         element.textContent = message;
-        element.className = 'form-message'; // Reset classes
+        element.className = 'form-message'; 
         element.classList.add(isSuccess ? 'success' : 'error');
-        element.style.display = message ? 'block' : 'none'; // Show/hide based on message
+        element.style.display = message ? 'block' : 'none'; 
     };
 
-    // --- Dynamic Odd Field Management ---
-    // ... (This section remains unchanged)
     const addExtraOddField = () => {
         if (newExtraOddsContainer.children.length >= MAX_EXTRA_ODDS) {
             showMessage(addMatchMessage, `Може да додадете најмногу ${MAX_EXTRA_ODDS} дополнителни коефициенти.`, false);
@@ -120,8 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(addEditOddFieldBtn) addEditOddFieldBtn.addEventListener('click', () => createExtraOddField());
 
-    // --- API Calls and Rendering ---
-    // ... (renderMatches, fetchAndRenderMatches, filterAndRenderAdminMatches remain unchanged)
     const renderMatches = (matchesToRender) => {
         adminMatchList.innerHTML = '';
         if (matchesToRender.length === 0) {
@@ -190,60 +175,47 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMatches(filtered);
     };
 
-    // --- MODIFIED: Event Listener setup ---
     const addEventListenersToAdminMatchButtons = () => {
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', (e) => openEditModal(e.target.dataset.matchId));
         });
         document.querySelectorAll('.btn-delete').forEach(button => {
-            // CHANGED: Instead of confirm(), call our new modal function
             button.addEventListener('click', (e) => openDeleteModal(e.target.dataset.matchId));
         });
     };
     
-    // --- NEW: Function to open the delete modal ---
     const openDeleteModal = (matchId) => {
         const match = allMatches.find(m => m.match_id_str === matchId);
         if (!match) {
             return;
         }
 
-        // Reset modal state
         deleteMatchIdHidden.value = matchId;
         const displayId = matchId.replace('match_', '');
         deleteMatchInfo.innerHTML = `ID: ${displayId} (${match.team1} vs ${match.team2})`;
-        showMessage(deleteConfirmMessage, '', true); // Clear previous messages
-        deleteConfirmContent.style.display = 'block'; // Show the confirmation text and buttons
-
-        // Show the modal
+        showMessage(deleteConfirmMessage, '', true); 
+        deleteConfirmContent.style.display = 'block'; 
         deleteConfirmModal.classList.add('modal-visible');
     };
 
-    // --- MODIFIED: The deleteMatch function now updates the modal instead of alerting ---
     const deleteMatch = async (matchId) => {
-        confirmDeleteBtn.disabled = true; // Prevent double clicks
+        confirmDeleteBtn.disabled = true; 
         showMessage(deleteConfirmMessage, 'Бришење во тек...', true);
 
         try {
             const response = await fetch(`/api/matches/${matchId}`, { method: 'DELETE' });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error);
-
-            // Show success message inside the modal
             showMessage(deleteConfirmMessage, data.message, true);
-            deleteConfirmContent.style.display = 'none'; // Hide "Are you sure?" and Yes/No buttons
-            
-            fetchAndRenderMatches(); // Refresh the main list
-
+            deleteConfirmContent.style.display = 'none'; 
+            fetchAndRenderMatches(); 
         } catch (error) {
             console.error('Error deleting match:', error);
-            // Show error message inside the modal
             showMessage(deleteConfirmMessage, `Грешка при бришење: ${error.message}`, false);
-            confirmDeleteBtn.disabled = false; // Re-enable button on failure
+            confirmDeleteBtn.disabled = false; 
         }
     };
     
-    // ... (openEditModal remains unchanged)
     const openEditModal = async (matchId) => {
         try {
             const response = await fetch(`/api/matches/${matchId}`);
@@ -276,8 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Form Submission Handlers ---
-    // ... (addMatchForm and editMatchForm handlers remain unchanged)
     if(addMatchForm) {
         addMatchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -414,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NEW: Event listeners for the delete modal buttons ---
     if(confirmDeleteBtn) {
         confirmDeleteBtn.addEventListener('click', () => {
             const matchId = deleteMatchIdHidden.value;
@@ -426,8 +395,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', () => deleteConfirmModal.classList.remove('modal-visible'));
     if(deleteModalCloseBtn) deleteModalCloseBtn.addEventListener('click', () => deleteConfirmModal.classList.remove('modal-visible'));
 
-
-    // --- MODIFIED: Window click listener to close *either* modal ---
     window.addEventListener('click', (event) => {
         if (event.target === editMatchModal) {
             editMatchModal.classList.remove('modal-visible');
@@ -442,11 +409,17 @@ document.addEventListener('DOMContentLoaded', () => {
 }
     });
 
-    // --- Search Input Listener ---
     if (adminSearchInput) {
         adminSearchInput.addEventListener('keyup', filterAndRenderAdminMatches);
     }
 
-    // --- Initial Load ---
     fetchAndRenderMatches();
 });
+};
+if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupAdmin);
+    } else {
+        setupAdmin();
+    }
+}
